@@ -1,31 +1,54 @@
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'SysVocacional') }}</title>
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 font-sans antialiased">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <title>{{ config('app.name', 'Laravel') }}</title>
+
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+
+        <!-- Scripts -->
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    </head>
+    <body class="font-sans antialiased">
+        <div class="min-h-screen bg-gray-100">
+        <body class="bg-gray-50 font-sans antialiased">
     <header class="bg-[#02311a] text-white py-4 shadow-md">
         <nav class="container mx-auto flex justify-between items-center px-4">
             <div class="text-2xl font-bold">Sistema Vocacional</div>
             <ul class="flex space-x-6">
-                <li><a href="{{ route('home') }}" class="hover:text-[#0cad56]">Inicio</a></li>
+                <li><a  class="hover:text-[#0cad56]">Inicio</a></li>
                 <li><a class="hover:text-[#0cad56]">Sobre Nosotros</a></li>
                 <li><a  class="hover:text-[#0cad56]">Contáctanos</a></li>
-                <li><a href="{{ route('noticias.index') }}" class="hover:text-[#0cad56]">Blog/Noticias</a></li>
-                <li><a  class="hover:text-[#0cad56]">Login</a></li> 
+                <li><a  class="hover:text-[#0cad56]">Blog/Noticias</a></li>
+                <li><a href="{{ route('login') }}" class="hover:text-[#0cad56]">Login</a></li> 
             </ul>
         </nav>
     </header>
 
-    <main class="container mx-auto mt-8 px-4">
-        @yield('content')
-    </main>
+            <!-- Page Heading -->
+            @isset($header)
+                <header class="bg-white shadow">
+                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                        {{ $header }}
+                    </div>
+                </header>
+            @endisset
 
-    <footer class="bg-[#02311a] text-white py-8 mt-16">
+            <!-- Page Content -->
+            <main>
+                @yield('content')
+            </main
+        </div>
+
+        <footer class="bg-[#02311a] text-white py-8 mt-16">
         <div class="container mx-auto px-4 grid md:grid-cols-3 gap-8">
             <div>
                 <h4 class="font-bold mb-4">SysVocacional</h4>
@@ -36,10 +59,10 @@
             <div>
                 <h4 class="font-bold mb-4">Enlaces Rápidos</h4>
                 <ul>
-                    <li><a href="{{ route('home') }}" class="text-white hover:underline ">Inicio</a></li>
+                    <li><a class="text-white hover:underline ">Inicio</a></li>
                     <li><a  class="text-white hover:underline">Sobre Nosotros</a></li>
                     <li><a  class="text-white hover:underline">Contáctanos</a></li>
-                    <li><a href="{{ route('noticias.index') }}" class="text-white hover:underline">Blog</a></li>
+                    <li><a class="text-white hover:underline">Blog</a></li>
                 </ul>
             </div>
             <div>
@@ -51,5 +74,6 @@
             </div>
         </div>
     </footer>
-</body>
+        
+    </body>
 </html>
