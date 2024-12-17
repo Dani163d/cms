@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://cdn.tailwindcss.com"></script>
         <title>{{ config('app.name', 'Laravel') }}</title>
@@ -18,7 +18,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+        <div class=" bg-gray-100">
         <body class="bg-gray-50 font-sans antialiased">
     <header class="bg-[#02311a] text-white py-4 shadow-md">
         <nav class="container mx-auto flex justify-between items-center px-4">
@@ -27,7 +27,7 @@
                 <li><a  class="hover:text-[#0cad56]">Inicio</a></li>
                 <li><a class="hover:text-[#0cad56]">Sobre Nosotros</a></li>
                 <li><a  class="hover:text-[#0cad56]">Contáctanos</a></li>
-                <li><a  class="hover:text-[#0cad56]">Blog/Noticias</a></li>
+                <li><a href="{{ route('noticias.index') }}" class="hover:text-[#0cad56]">Blog/Noticias</a></li>
                 <li><a href="{{ route('login') }}" class="hover:text-[#0cad56]">Login</a></li> 
             </ul>
         </nav>
@@ -62,7 +62,7 @@
                     <li><a class="text-white hover:underline ">Inicio</a></li>
                     <li><a  class="text-white hover:underline">Sobre Nosotros</a></li>
                     <li><a  class="text-white hover:underline">Contáctanos</a></li>
-                    <li><a class="text-white hover:underline">Blog</a></li>
+                    <li><a href="{{ route('noticias.index') }}" class="text-white hover:underline">Blog</a></li>
                 </ul>
             </div>
             <div>

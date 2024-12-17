@@ -1,29 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-<section class="">
-<div class="mt-16 text-center">
-            <div class="flex flex-wrap justify-center gap-4">
-                @php
-                $categorias = [
-                    'Orientación Vocacional',
-                    'Carreras Profesionales',
-                    'Educación Superior',
-                    'Desarrollo Personal',
-                    'Tendencias Laborales'
-                ];
-                @endphp
-
-                @foreach($categorias as $categoria)
-                <a href="#" class="bg-gray-100 text-[#02311a] px-4 py-2 rounded-full hover:bg-[#0cad56] hover:text-white transition">
-                    {{ $categoria }}
-                </a>
-                @endforeach
-            </div>
-        </div>
-    </div>
-</section>
-
 
     <div class="container mx-auto px-4">
         {{-- Featured Article Section --}}
