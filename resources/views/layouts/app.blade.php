@@ -12,12 +12,11 @@
         <nav class="container mx-auto flex justify-between items-center px-4">
             <div class="text-2xl font-bold">Sistema Vocacional</div>
             <ul class="flex space-x-6">
-                <li><a  class="hover:text-blue-200">Inicio</a></li>
-                <li><a class="hover:text-blue-200">Sobre Nosotros</a></li>
-                <li>
-    <a href="{{ route('noticias.index') }}" class="hover:text-blue-200">Blog/Noticias</a>
-</li>
-                <li><a  class="hover:text-blue-200">Contáctanos</a></li>
+                <li><a href="{{ route('home') }}" class="hover:text-[#0cad56]">Inicio</a></li>
+                <li><a class="hover:text-[#0cad56]">Sobre Nosotros</a></li>
+                <li><a  class="hover:text-[#0cad56]">Contáctanos</a></li>
+                <li><a href="{{ route('noticias.index') }}" class="hover:text-[#0cad56]">Blog/Noticias</a></li>
+                <li><a  class="hover:text-[#0cad56]">Login</a></li> 
             </ul>
         </nav>
     </header>
@@ -37,10 +36,10 @@
             <div>
                 <h4 class="font-bold mb-4">Enlaces Rápidos</h4>
                 <ul>
-                    <li><a  class="text-white hover:underline ">Inicio</a></li>
+                    <li><a href="{{ route('home') }}" class="text-white hover:underline ">Inicio</a></li>
                     <li><a  class="text-white hover:underline">Sobre Nosotros</a></li>
-                    <li><a href="{{ route('noticias.index') }}" class="text-white hover:underline">Blog</a></li>
                     <li><a  class="text-white hover:underline">Contáctanos</a></li>
+                    <li><a href="{{ route('noticias.index') }}" class="text-white hover:underline">Blog</a></li>
                 </ul>
             </div>
             <div>
