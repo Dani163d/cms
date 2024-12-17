@@ -99,6 +99,57 @@
     </div>
 </section>
 
+<section class="mt-16 px-4 py-16 bg-gray-50" id="contacto">
+    <div class="container mx-auto max-w-lg">
+        <h2 class="text-3xl font-semibold text-[#02311a] mb-8 text-center">Contáctanos</h2>
+        <form action="" method="POST" class="bg-white p-8 rounded-lg shadow-md">
+            @csrf
+            <div class="mb-4">
+                <label for="nombre" class="block text-gray-700 font-bold mb-2">Nombre Completo</label>
+                <input type="text" id="nombre" name="nombre" required 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0cad56]"
+                       placeholder="Tu nombre completo">
+            </div>
+
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700 font-bold mb-2">Correo Electrónico</label>
+                <input type="email" id="email" name="email" required 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0cad56]"
+                       placeholder="tucorreo@ejemplo.com">
+            </div>
+
+            <div class="mb-4">
+                <label for="telefono" class="block text-gray-700 font-bold mb-2">Teléfono (Opcional)</label>
+                <input type="tel" id="telefono" name="telefono" 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0cad56]"
+                       placeholder="10 dígitos">
+            </div>
+
+            <div class="mb-4">
+                <label for="mensaje" class="block text-gray-700 font-bold mb-2">Tu Mensaje</label>
+                <textarea id="mensaje" name="mensaje" rows="4" required 
+                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0cad56]"
+                          placeholder="Escribe aquí tus dudas o consultas"></textarea>
+            </div>
+
+            <div class="mb-4">
+                <label class="flex items-center">
+                    <input type="checkbox" name="politicas" required class="mr-2">
+                    <span class="text-gray-700 text-sm">Acepto las políticas de privacidad</span>
+                </label>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" 
+                        class="bg-[#0cad56] text-white px-6 py-3 rounded-lg hover:bg-[#02311a] transition duration-300">
+                    Enviar Mensaje
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+
 <style>
 [data-show-on-scroll] {
     opacity: 0;

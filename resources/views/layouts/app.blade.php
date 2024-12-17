@@ -14,7 +14,9 @@
             <ul class="flex space-x-6">
                 <li><a  class="hover:text-blue-200">Inicio</a></li>
                 <li><a class="hover:text-blue-200">Sobre Nosotros</a></li>
-                <li><a  class="hover:text-blue-200">Blog/Noticias</a></li>
+                <li>
+    <a href="{{ route('noticias.index') }}" class="hover:text-blue-200">Blog/Noticias</a>
+</li>
                 <li><a  class="hover:text-blue-200">Contáctanos</a></li>
             </ul>
         </nav>
@@ -37,7 +39,7 @@
                 <ul>
                     <li><a  class="text-white hover:underline ">Inicio</a></li>
                     <li><a  class="text-white hover:underline">Sobre Nosotros</a></li>
-                    <li><a  class="text-white hover:underline">Blog</a></li>
+                    <li><a href="{{ route('noticias.index') }}" class="text-white hover:underline">Blog</a></li>
                     <li><a  class="text-white hover:underline">Contáctanos</a></li>
                 </ul>
             </div>
