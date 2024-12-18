@@ -10,35 +10,35 @@ class RolesAndPermissionsSeeder extends Seeder
 {
     public function run()
     {
-        // Crear permisos
-        $permission1 = Permission::create(['name' => 'create articles']);  // Crear artículos
-        $permission2 = Permission::create(['name' => 'edit articles']);    // Editar artículos
-        $permission3 = Permission::create(['name' => 'delete articles']);  // Eliminar artículos
-        $permission4 = Permission::create(['name' => 'view articles']);    // Ver artículos
-        $permission5 = Permission::create(['name' => 'manage users']);     // Gestionar usuarios
+        // Crear permisos (usando firstOrCreate)
+        $permission1 = Permission::firstOrCreate(['name' => 'create articles']);
+        $permission2 = Permission::firstOrCreate(['name' => 'edit articles']);
+        $permission3 = Permission::firstOrCreate(['name' => 'delete articles']);
+        $permission4 = Permission::firstOrCreate(['name' => 'view articles']);
+        $permission5 = Permission::firstOrCreate(['name' => 'manage users']);
 
-        // Crear roles
-        $adminRole = Role::create(['name' => 'admin']);
-        $publisherRole = Role::create(['name' => 'publisher']);
-        $visitorRole = Role::create(['name' => 'visitor']);
+        // Crear roles (usando firstOrCreate)
+        $adminRole = Role::firstOrCreate(['name' => 'admin']);
+        $publisherRole = Role::firstOrCreate(['name' => 'publisher']);
+        $visitorRole = Role::firstOrCreate(['name' => 'visitor']);
 
-        // Asignar permisos al rol 'admin' (todos los permisos)
-        $adminRole->givePermissionTo([
-            $permission1, // Crear artículos
-            $permission2, // Editar artículos
-            $permission3, // Eliminar artículos
-            $permission4, // Ver artículos
-            $permission5  // Gestionar usuarios
+        // Asignar permisos al rol 'admin'
+        $adminRole->syncPermissions([
+            $permission1, 
+            $permission2, 
+            $permission3, 
+            $permission4, 
+            $permission5
         ]);
 
-        // Asignar permisos al rol 'publisher' (crear, editar y ver artículos)
-        $publisherRole->givePermissionTo([
-            $permission1, // Crear artículos
-            $permission2, // Editar artículos
-            $permission4  // Ver artículos
+        // Asignar permisos al rol 'publisher'
+        $publisherRole->syncPermissions([
+            $permission1, 
+            $permission2, 
+            $permission4
         ]);
 
-        // Asignar permisos al rol 'visitor' (solo ver artículos)
-        $visitorRole->givePermissionTo($permission4); // Ver artículos
+        // Asignar permisos al rol 'visitor'
+        $visitorRole->syncPermissions([$permission4]);
     }
 }

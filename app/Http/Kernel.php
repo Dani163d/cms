@@ -2,7 +2,9 @@
 
 namespace App\Http;
 
+use Illuminate\Cache\ApcStore;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Support\Facades\App;
 
 class Kernel extends HttpKernel
 {
@@ -44,5 +46,8 @@ class Kernel extends HttpKernel
         'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+        'check.role' => \App\Http\Middleware\CheckRole::class,
+        'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
+
     ];
 }

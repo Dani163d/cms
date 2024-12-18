@@ -48,12 +48,16 @@ Route::post('/register', [RegisteredUserController::class, 'store']);
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
+    
 
-
-
-    use App\Http\Controllers\AdminController;
-    Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
-        Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
-        Route::get('/users', [AdminController::class, 'manageUsers'])->name('admin.users');
-        Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');
+    use App\Http\Controllers\Admin\AdminController;
+    Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     });
+
+    
+    
+    
