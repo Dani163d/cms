@@ -1,8 +1,18 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center bg-[#f4f4f4] py-16">
-    <div class="w-full max-w-md">
+<div class="min-h-screen flex flex-col bg-[#f4f4f4] py-16">
+    <!-- Botón de cierre de sesión -->
+    <div class="w-full max-w-md mx-auto mb-4 flex justify-end">
+        <form method="POST" action="{{ route('logout') }}" class="inline">
+            @csrf
+            <button type="submit" class="bg-[#0cad56] text-white px-4 py-2 rounded-lg hover:bg-[#02311a] transition duration-300">
+                Cerrar Sesión
+            </button>
+        </form>
+    </div>
+
+    <div class="w-full max-w-md mx-auto">
         <div class="bg-white shadow-md rounded-lg overflow-hidden">
             <div class="bg-[#02311a] text-white text-center py-6">
                 <h2 class="text-3xl font-bold">Registrar un Publicador</h2>
