@@ -11,11 +11,17 @@ class RolesAndPermissionsSeeder extends Seeder
     public function run()
     {
         // Crear permisos (usando firstOrCreate)
-        $permission1 = Permission::firstOrCreate(['name' => 'create articles']);
-        $permission2 = Permission::firstOrCreate(['name' => 'edit articles']);
-        $permission3 = Permission::firstOrCreate(['name' => 'delete articles']);
-        $permission4 = Permission::firstOrCreate(['name' => 'view articles']);
-        $permission5 = Permission::firstOrCreate(['name' => 'manage users']);
+        $permissions = [
+            'create articles',
+            'edit articles',
+            'delete articles',
+            'view articles',
+            'manage users'
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
 
         // Crear roles (usando firstOrCreate)
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
@@ -24,21 +30,23 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Asignar permisos al rol 'admin'
         $adminRole->syncPermissions([
-            $permission1, 
-            $permission2, 
-            $permission3, 
-            $permission4, 
-            $permission5
+            'create articles', 
+            'edit articles', 
+            'delete articles', 
+            'view articles', 
+            'manage users',
         ]);
 
         // Asignar permisos al rol 'publisher'
         $publisherRole->syncPermissions([
-            $permission1, 
-            $permission2, 
-            $permission4
+            'create articles', 
+            'edit articles', 
+            'view articles',
         ]);
 
         // Asignar permisos al rol 'visitor'
-        $visitorRole->syncPermissions([$permission4]);
+        $visitorRole->syncPermissions([
+            'view articles',
+        ]);
     }
 }

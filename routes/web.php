@@ -55,11 +55,16 @@ Route::post('/admin/create-user', [AdminController::class, 'createUser'])->name(
     
 
 use App\Http\Controllers\Publisher\PublisherController;
-use App\Http\Middleware\EnsureUserIsPublisher;
 
-Route::middleware(['auth', EnsureUserIsPublisher::class])
+Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsPublisher::class])
     ->prefix('publisher')
     ->name('publisher.')
     ->group(function () {
         Route::get('/dashboard', [PublisherController::class, 'dashboard'])->name('dashboard');
+        Route::post('/store-news', [PublisherController::class, 'storeNews'])->name('storeNews');
     });
+     
+
+// Ruta para mostrar todas las noticias (de todos los publicadores)
+Route::get('/noticias', [PublisherController::class, 'showNews'])->name('publisher.showNews');
+

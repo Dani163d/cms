@@ -45,9 +45,9 @@ class User extends Authenticatable
         ];
     }
 
-
-    public function isAdmin()
+    public function news()
     {
-        return $this->hasRole('admin');
+        return $this->hasMany(News::class);
     }
+    
 }
