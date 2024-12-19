@@ -51,6 +51,61 @@ class PublisherController extends Controller
     
         return redirect()->route('login')->with('error', 'Debes iniciar sesión para publicar una noticia.');
     }
+
+    public function editNews($id)
+{
+    // Obtener la noticia por ID
+    $news = News::findOrFail($id);
+
+    // Verificar si la noticia fue creada por el usuario autenticado
+    if ($news->user_id != Auth::id()) {
+        return redirect()->route('publisher.dashboard')->with('error', 'No tienes permiso para editar esta noticia.');
+    }
+
+    return view('publisher.edit', compact('news'));
+}
+
+public function updateNews(Request $request, $id)
+{
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'content' => 'required|string',
+    ]);
+
+    // Obtener la noticia por ID
+    $news = News::findOrFail($id);
+
+    // Verificar si la noticia fue creada por el usuario autenticado
+    if ($news->user_id != Auth::id()) {
+        return redirect()->route('publisher.dashboard')->with('error', 'No tienes permiso para editar esta noticia.');
+    }
+
+    // Actualizar la noticia
+    $news->title = $validated['title'];
+    $news->content = $validated['content'];
+    $news->save();
+
+    // Redirigir al dashboard con un mensaje de éxito
+    return redirect()->route('publisher.dashboard')->with('success', 'Noticia actualizada con éxito.');
+}
+
+public function deleteNews($id)
+{
+    // Obtener la noticia por ID
+    $news = News::findOrFail($id);
+
+    // Verificar si la noticia fue creada por el usuario autenticado
+    if ($news->user_id != Auth::id()) {
+        return redirect()->route('publisher.dashboard')->with('error', 'No tienes permiso para eliminar esta noticia.');
+    }
+
+    // Eliminar la noticia
+    $news->delete();
+
+    // Redirigir al dashboard con un mensaje de éxito
+    return redirect()->route('publisher.dashboard')->with('success', 'Noticia eliminada con éxito.');
+}
+
   
 
 }

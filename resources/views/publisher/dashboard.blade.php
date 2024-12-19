@@ -34,6 +34,16 @@
                 <h3 class="text-xl font-semibold mb-2">{{ $item->title }}</h3>
                 <p class="text-gray-700">{{ $item->content }}</p>
                 <p class="text-sm text-gray-500 mt-4">Publicado el: {{ $item->created_at->format('d/m/Y') }}</p>
+
+                <div class="mt-4 flex justify-between">
+                    <a href="{{ route('publisher.editNews', $item->id) }}" class="text-blue-600">Editar</a>
+
+                    <form action="{{ route('publisher.deleteNews', $item->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta noticia?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-red-600">Eliminar</button>
+                    </form>
+                </div>
             </div>
         @endforeach
     </div>

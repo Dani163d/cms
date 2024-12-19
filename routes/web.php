@@ -62,7 +62,12 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsPublisher::class])
     ->group(function () {
         Route::get('/dashboard', [PublisherController::class, 'dashboard'])->name('dashboard');
         Route::post('/dashboard', [PublisherController::class, 'storeNews'])->name('storeNews');
+        Route::get('edit/{id}', [PublisherController::class, 'editNews'])->name('editNews');
+        Route::post('update/{id}', [PublisherController::class, 'updateNews'])->name('updateNews');
+        Route::delete('delete/{id}', [PublisherController::class, 'deleteNews'])->name('deleteNews');
     });
+
+
 
 // Ruta para mostrar las noticias
 Route::get('/noticias', [PublisherController::class, 'showNews'])->name('noticias');
