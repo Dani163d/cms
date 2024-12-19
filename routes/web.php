@@ -60,4 +60,6 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
 
     
     
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+Route::post('/admin/create-user', [AdminController::class, 'createUser'])->name('admin.createUser');
     

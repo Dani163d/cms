@@ -64,3 +64,10 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+<!-- 
+SELECT users.name AS user_name, roles.name AS role_name
+FROM users
+LEFT JOIN model_has_roles ON users.id = model_has_roles.model_id
+LEFT JOIN roles ON model_has_roles.role_id = roles.id
+WHERE model_has_roles.model_type = 'App\\Models\\User'; -->
