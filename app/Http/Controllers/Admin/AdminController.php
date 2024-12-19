@@ -57,5 +57,32 @@ class AdminController extends Controller
         // Pasar los datos a la vista 'admin.manage_user'
         return view('admin.manage_users', compact('publishers', 'visitors'));
     }
-    
+
+    public function deleteUser($id)
+    {
+        $user = User::findOrFail($id);
+
+        // Eliminar usuario
+        $user->delete();
+
+        // Redirigir con mensaje de éxito
+        return redirect()->route('admin.manageUsers')->with('success', 'Usuario eliminado exitosamente');
+    }
+
+    public function changeRole($id, $role)
+    {
+        $user = User::findOrFail($id);
+
+        // Validar que el rol proporcionado sea 'publisher' o 'visitor'
+        if (!in_array($role, ['publisher', 'visitor'])) {
+            return redirect()->route('admin.manageUsers')->with('error', 'Rol inválido');
+        }
+
+        // Eliminar los roles actuales y asignar el nuevo rol
+        $user->syncRoles([$role]);
+
+        // Redirigir con mensaje de éxito
+        return redirect()->route('admin.manageUsers')->with('success', 'Rol cambiado exitosamente');
+    }
+
 }

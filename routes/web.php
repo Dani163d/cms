@@ -47,7 +47,8 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::get('/manage-users', [AdminController::class, 'viewUsers'])->name('manageUsers');
-
+        Route::delete('/user/{id}', [AdminController::class, 'deleteUser'])->name('deleteUser');
+        Route::post('/user/{id}/role/{role}', [AdminController::class, 'changeRole'])->name('changeRole');
     });
 
     
