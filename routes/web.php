@@ -46,12 +46,17 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::get('/manage-users', [AdminController::class, 'viewUsers'])->name('manageUsers');
+
     });
 
     
     
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 Route::post('/admin/create-user', [AdminController::class, 'createUser'])->name('admin.createUser');
+
+
+
     
 
 use App\Http\Controllers\Publisher\PublisherController;

@@ -43,4 +43,19 @@ class AdminController extends Controller
         // Redirigir con un mensaje de éxito
         return redirect()->route('admin.dashboard')->with('success', 'Usuario registrado como publicador exitosamente');
     }
+
+    public function viewUsers()
+    {
+        // Obtener los roles 'publisher' y 'visitor'
+        $publisherRole = Role::where('name', 'publisher')->first();
+        $visitorRole = Role::where('name', 'visitor')->first();
+
+        // Obtener los usuarios con el rol de 'publisher' y 'visitor'
+        $publishers = User::role('publisher')->get();
+        $visitors = User::role('visitor')->get();
+
+        // Pasar los datos a la vista 'admin.manage_user'
+        return view('admin.manage_users', compact('publishers', 'visitors'));
+    }
+    
 }
