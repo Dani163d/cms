@@ -1,7 +1,10 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }} usuario
+            {{ __('Dashboard') }} Usuario
+            <a href="{{ route('noticias') }}" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">
+                Ver Noticias Publicadas
+            </a>
         </h2>
     </x-slot>
 

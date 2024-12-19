@@ -18,16 +18,23 @@ class PublisherController extends Controller
         return view('publisher.dashboard', compact('news'));
     }
     
+    public function showNews()
+    {
+        // Obtener todas las noticias
+        $allNews = News::all(); // O usa un filtro como latest() si prefieres las más recientes
+    
+        // Pasar las noticias a la vista
+        return view('noticias', compact('allNews'));
+    }
 
+    // Método para guardar las noticias (ya lo tienes)
     public function storeNews(Request $request)
     {
-        // Validar los datos del formulario
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
         ]);
     
-        // Verificar si el usuario está autenticado
         if (Auth::check()) {
             // Crear la noticia
             $news = new News();
@@ -35,17 +42,15 @@ class PublisherController extends Controller
             $news->content = $validated['content'];
             $news->user_id = Auth::id(); // Asignar el ID del usuario autenticado
     
-            // Guardar la noticia en la base de datos
+            // Guardar la noticia
             $news->save();
     
-            // Redirigir al dashboard con un mensaje de éxito
-            return view('noticias', compact('news'));
+            // Redirigir a la vista de noticias después de crearla
+            return redirect()->route('noticias'); // Redirigir a la ruta de noticias
         }
     
-        // Si no está autenticado, redirigir al login
         return redirect()->route('login')->with('error', 'Debes iniciar sesión para publicar una noticia.');
     }
-    
-
+  
 
 }

@@ -61,10 +61,8 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsPublisher::class])
     ->name('publisher.')
     ->group(function () {
         Route::get('/dashboard', [PublisherController::class, 'dashboard'])->name('dashboard');
-        Route::post('/store-news', [PublisherController::class, 'storeNews'])->name('storeNews');
+        Route::post('/dashboard', [PublisherController::class, 'storeNews'])->name('storeNews');
     });
-     
 
-// Ruta para mostrar todas las noticias (de todos los publicadores)
-Route::get('/noticias', [PublisherController::class, 'showNews'])->name('publisher.showNews');
-
+// Ruta para mostrar las noticias
+Route::get('/noticias', [PublisherController::class, 'showNews'])->name('noticias');
