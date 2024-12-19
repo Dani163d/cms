@@ -53,3 +53,13 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 Route::post('/admin/create-user', [AdminController::class, 'createUser'])->name('admin.createUser');
     
+
+use App\Http\Controllers\Publisher\PublisherController;
+use App\Http\Middleware\EnsureUserIsPublisher;
+
+Route::middleware(['auth', EnsureUserIsPublisher::class])
+    ->prefix('publisher')
+    ->name('publisher.')
+    ->group(function () {
+        Route::get('/dashboard', [PublisherController::class, 'dashboard'])->name('dashboard');
+    });
