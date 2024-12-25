@@ -61,6 +61,7 @@ Route::post('/admin/create-user', [AdminController::class, 'createUser'])->name(
     
 
 use App\Http\Controllers\Publisher\PublisherController;
+use App\Http\Controllers\ContactController;
 
 Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsPublisher::class])
     ->prefix('publisher')
@@ -81,3 +82,5 @@ Route::get('/noticias', [PublisherController::class, 'showNews'])->name('noticia
 Route::post('/upload-image', [PublisherController::class, 'uploadImage'])
     ->name('upload.image')
     ->middleware(['auth', 'web']);
+
+    Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
