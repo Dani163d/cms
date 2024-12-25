@@ -12,120 +12,157 @@ class PublisherController extends Controller
 {
     public function dashboard()
     {
-        // Obtener todas las noticias
-        $news = News::all(); // O usa el método adecuado según el filtro que necesites (por ejemplo, `latest()`)
+        $news = News::where('user_id', Auth::id())
+                    ->orderBy('created_at', 'desc')
+                    ->get();
     
-        // Pasar las noticias a la vista
         return view('publisher.dashboard', compact('news'));
     }
     
     public function showNews()
     {
-        // Obtener todas las noticias
-        $allNews = News::all(); // O usa un filtro como latest() si prefieres las más recientes
-    
-        // Pasar las noticias a la vista
+        $allNews = News::orderBy('created_at', 'desc')->get();
         return view('noticias', compact('allNews'));
     }
 
-    // Método para guardar las noticias (ya lo tienes)
     public function storeNews(Request $request)
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
         ]);
-    
-        if (Auth::check()) {
-            // Crear la noticia
+
+        try {
             $news = new News();
             $news->title = $validated['title'];
             $news->content = $validated['content'];
-            $news->user_id = Auth::id(); // Asignar el ID del usuario autenticado
-    
-            // Guardar la noticia
+            $news->user_id = Auth::id();
             $news->save();
-    
-            // Redirigir a la vista de noticias después de crearla
-            return redirect()->route('noticias'); // Redirigir a la ruta de noticias
+
+            return redirect()->route('noticias')
+                           ->with('success', 'Noticia publicada exitosamente');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                           ->with('error', 'Error al publicar la noticia: ' . $e->getMessage())
+                           ->withInput();
         }
-    
-        return redirect()->route('login')->with('error', 'Debes iniciar sesión para publicar una noticia.');
     }
 
-    public function editNews($id)
+    public function uploadImage(Request $request)
 {
-    // Obtener la noticia por ID
-    $news = News::findOrFail($id);
-
-    // Verificar si la noticia fue creada por el usuario autenticado
-    if ($news->user_id != Auth::id()) {
-        return redirect()->route('publisher.dashboard')->with('error', 'No tienes permiso para editar esta noticia.');
+    if (!$request->hasFile('image')) {
+        return response()->json([
+            'error' => 'No image file uploaded'
+        ], 400);
     }
 
-    return view('publisher.edit', compact('news'));
-}
-
-public function updateNews(Request $request, $id)
-{
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'content' => 'required|string',
-    ]);
-
-    // Obtener la noticia por ID
-    $news = News::findOrFail($id);
-
-    // Verificar si la noticia fue creada por el usuario autenticado
-    if ($news->user_id != Auth::id()) {
-        return redirect()->route('publisher.dashboard')->with('error', 'No tienes permiso para editar esta noticia.');
-    }
-
-    // Actualizar la noticia
-    $news->title = $validated['title'];
-    $news->content = $validated['content'];
-    $news->save();
-
-    // Redirigir al dashboard con un mensaje de éxito
-    return redirect()->route('publisher.dashboard')->with('success', 'Noticia actualizada con éxito.');
-}
-
-public function deleteNews($id)
-{
-    // Obtener la noticia por ID
-    $news = News::findOrFail($id);
-
-    // Verificar si la noticia fue creada por el usuario autenticado
-    if ($news->user_id != Auth::id()) {
-        return redirect()->route('publisher.dashboard')->with('error', 'No tienes permiso para eliminar esta noticia.');
-    }
-
-    // Eliminar la noticia
-    $news->delete();
-
-    // Redirigir al dashboard con un mensaje de éxito
-    return redirect()->route('publisher.dashboard')->with('success', 'Noticia eliminada con éxito.');
-}
-
-public function uploadImage(Request $request)
-{
-    if ($request->hasFile('image')) {
-        $image = $request->file('image');
+    try {
+        $file = $request->file('image');
         
-        if (!$image->isValid() || !in_array($image->getClientMimeType(), ['image/jpeg', 'image/png', 'image/gif'])) {
-            return response()->json(['error' => 'Archivo inválido'], 400);
-        }
+        // Validar el archivo
+        $validated = $request->validate([
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
 
-        $fileName = uniqid() . '_' . $image->getClientOriginalName();
-        $path = $image->storeAs('public/uploads', $fileName);
+        // Generar un nombre único para la imagen
+        $fileName = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+        
+        // Guardar la imagen en storage/app/public/images
+        $path = $file->storeAs('public/images', $fileName);
+        
+        // Generar la URL pública
+        $url = Storage::url($path);
 
         return response()->json([
-            'url' => asset('storage/uploads/' . $fileName)
+            'uploaded' => true,
+            'url' => $url
         ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'uploaded' => false,
+            'error' => [
+                'message' => 'Error al subir la imagen: ' . $e->getMessage()
+            ]
+        ], 500);
+    }
+}
+
+    public function editNews($id)
+    {
+        $news = News::findOrFail($id);
+
+        if ($news->user_id != Auth::id()) {
+            return redirect()->route('publisher.dashboard')
+                           ->with('error', 'No tienes permiso para editar esta noticia.');
+        }
+
+        return view('publisher.edit', compact('news'));
     }
 
-    return response()->json(['error' => 'No se encontró imagen'], 400);
-}
-  
+    public function updateNews(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
 
+        $news = News::findOrFail($id);
+
+        if ($news->user_id != Auth::id()) {
+            return redirect()->route('publisher.dashboard')
+                           ->with('error', 'No tienes permiso para editar esta noticia.');
+        }
+
+        try {
+            $news->title = $validated['title'];
+            $news->content = $validated['content'];
+            $news->save();
+
+            return redirect()->route('publisher.dashboard')
+                           ->with('success', 'Noticia actualizada con éxito.');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                           ->with('error', 'Error al actualizar la noticia: ' . $e->getMessage())
+                           ->withInput();
+        }
+    }
+
+    public function deleteNews($id)
+    {
+        $news = News::findOrFail($id);
+
+        if ($news->user_id != Auth::id()) {
+            return redirect()->route('publisher.dashboard')
+                           ->with('error', 'No tienes permiso para eliminar esta noticia.');
+        }
+
+        try {
+            // Buscar imágenes en el contenido antes de eliminar
+            preg_match_all('/<img[^>]+src="([^">]+)"/', $news->content, $matches);
+            
+            if (!empty($matches[1])) {
+                foreach ($matches[1] as $src) {
+                    // Obtener solo el nombre del archivo de la URL completa
+                    $imagePath = str_replace('/storage/', 'public/', $src);
+                    
+                    // Eliminar la imagen del storage si existe
+                    if (Storage::exists($imagePath)) {
+                        Storage::delete($imagePath);
+                    }
+                }
+            }
+
+            $news->delete();
+
+            return redirect()->route('publisher.dashboard')
+                           ->with('success', 'Noticia eliminada con éxito.');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                           ->with('error', 'Error al eliminar la noticia: ' . $e->getMessage());
+        }
+    }
 }
