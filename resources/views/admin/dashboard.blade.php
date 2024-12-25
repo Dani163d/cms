@@ -2,13 +2,7 @@
 
 @section('content')
 <div class="min-h-screen flex flex-col bg-[#f4f4f4] py-16">
-    <!-- Botón de cierre de sesión -->
     <div class="w-full max-w-md mx-auto mb-4 flex justify-end">
-        <form method="POST" action="{{ route('logout') }}" class="inline">
-            @csrf
-            <button type="submit" class="bg-[#0cad56] text-white px-4 py-2 rounded-lg hover:bg-[#02311a] transition duration-300">
-                Cerrar Sesión
-            </button>
             <a href="{{ route('admin.manageUsers') }}" class="inline-block bg-[#02311a] text-white px-6 py-3 rounded-lg hover:bg-[#0cad56] transition duration-300">
     Ver Todos los Usuarios
 </a>
