@@ -2,13 +2,7 @@
 
 @section('content')
 <div class="min-h-screen flex flex-col bg-[#f4f4f4] py-16">
-    <div class="w-full max-w-md mx-auto mb-4 flex justify-end">
-            <a href="{{ route('admin.manageUsers') }}" class="inline-block bg-[#02311a] text-white px-6 py-3 rounded-lg hover:bg-[#0cad56] transition duration-300">
-    Ver Todos los Usuarios
-</a>
-
-        </form>
-    </div>
+    
 
     <div class="w-full max-w-md mx-auto">
         <div class="bg-white shadow-md rounded-lg overflow-hidden">

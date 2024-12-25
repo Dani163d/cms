@@ -18,24 +18,28 @@
     <body class="font-sans antialiased">
         <div class="bg-gray-100">
             <header class="bg-[#02311a] text-white py-4 shadow-md">
-                <nav class="container mx-auto flex justify-between items-center px-4">
-                    <div class="text-2xl font-bold">Sistema Vocacional</div>
-                    <ul class="flex space-x-6">
-                        <li><a href="{{ route('home') }}" class="hover:text-[#0cad56]">Inicio</a></li>
-                        <li><a class="hover:text-[#0cad56]">Sobre Nosotros</a></li>
-                        <li><a class="hover:text-[#0cad56]">Contáctanos</a></li>
-                        @guest
-                            <li><a href="{{ route('login') }}" class="hover:text-[#0cad56]">Login</a></li>
-                        @else
-                            <li>
-                                <form method="POST" action="{{ route('logout') }}" class="inline">
-                                    @csrf
-                                    <button type="submit" class="hover:text-[#0cad56]">Cerrar Sesión</button>
-                                </form>
-                            </li>
-                        @endguest
-                    </ul>
-                </nav>
+            <nav class="container mx-auto flex justify-between items-center px-4">
+    <div class="text-2xl font-bold">Sistema Vocacional</div>
+    <ul class="flex space-x-6">
+        @guest
+            <li><a href="{{ route('home') }}" class="hover:text-[#0cad56]">Inicio</a></li>
+            <li><a class="hover:text-[#0cad56]">Sobre Nosotros</a></li>
+            <li><a class="hover:text-[#0cad56]">Contáctanos</a></li>
+            <li><a href="{{ route('login') }}" class="hover:text-[#0cad56]">Login</a></li>
+        @else
+            @if(auth()->user()->hasRole('admin'))
+                <li><a href="{{ route('admin.dashboard') }}" class="hover:text-[#0cad56]">Registrar Publicador</a></li>
+                <li><a href="{{ route('admin.manageUsers') }}" class="hover:text-[#0cad56]">Ver Todos los Usuarios</a></li>
+            @endif
+            <li>
+                <form method="POST" action="{{ route('logout') }}" class="inline">
+                    @csrf
+                    <button type="submit" class="hover:text-[#0cad56]">Cerrar Sesión</button>
+                </form>
+            </li>
+        @endguest
+    </ul>
+</nav>
             </header>
 
             <!-- Page Heading -->
