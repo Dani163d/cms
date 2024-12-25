@@ -27,15 +27,16 @@
             <li><a href="{{ route('home') }}" class="hover:text-[#0cad56]">Inicio</a></li>
                 <li><a class="hover:text-[#0cad56]">Sobre Nosotros</a></li>
                 <li><a  class="hover:text-[#0cad56]">Contáctanos</a></li>
-                <li><a href="{{ route('login') }}" class="hover:text-[#0cad56]">Login</a></li>
-                @auth
-        @role('admin')
-            <form method="POST" action="{{ route('logout') }}" class="inline">
-                @csrf
-                <button type="submit" class="btn btn-danger">Cerrar Sesión</button>
-            </form>
-        @endrole
-    @endauth
+                @guest
+            <li><a href="{{ route('login') }}" class="hover:text-[#0cad56]">Login</a></li>
+        @else
+            <li>
+                <form method="POST" action="{{ route('logout') }}" class="inline">
+                    @csrf
+                    <button type="submit" class="hover:text-[#0cad56]">Cerrar Sesión</button>
+                </form>
+            </li>
+        @endguest
             </ul>
         </nav>
     </header>
