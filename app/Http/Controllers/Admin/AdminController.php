@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use App\Mail\NewPublisherCredentials;
+use Illuminate\Support\Facades\Mail;
 
 class AdminController extends Controller
 {
@@ -21,28 +23,34 @@ class AdminController extends Controller
 
     // Método para crear un nuevo usuario
     public function createUser(Request $request)
-    {
-        // Validar los datos
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed', // Confirmación de contraseña
-        ]);
+{
+    // Validar los datos
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|string|min:6|confirmed',
+    ]);
 
-        // Crear el usuario
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    // Guardar la contraseña sin encriptar para el correo
+    $plainPassword = $request->password;
 
-        // Asignar el rol 'publisher' al nuevo usuario
-        $publisherRole = Role::where('name', 'publisher')->first();
-        $user->assignRole($publisherRole);
+    // Crear el usuario
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($plainPassword),
+    ]);
 
-        // Redirigir con un mensaje de éxito
-        return redirect()->route('admin.dashboard')->with('success', 'Usuario registrado como publicador exitosamente');
-    }
+    // Asignar el rol 'publisher'
+    $publisherRole = Role::where('name', 'publisher')->first();
+    $user->assignRole($publisherRole);
+
+    // Enviar el correo con las credenciales
+    Mail::to($user->email)->send(new NewPublisherCredentials($user->name, $user->email, $plainPassword));
+
+    // Redirigir con un mensaje de éxito
+    return redirect()->route('admin.dashboard')->with('success', 'Usuario registrado como publicador exitosamente');
+}
 
     public function viewUsers()
     {
