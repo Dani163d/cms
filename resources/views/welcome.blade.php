@@ -76,12 +76,13 @@
     </div>
 </section>
 
+
+<section id="contacto" class="mt-16 px-4 py-16 bg-gray-50 min-h-screen">
 @if(session('success'))
     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
         <span class="block sm:inline">{{ session('success') }}</span>
     </div>
 @endif
-<section id="contacto" class="mt-16 px-4 py-16 bg-gray-50 min-h-screen">
     <div class="container mx-auto max-w-lg">
         <h2 class="text-3xl font-semibold text-[#02311a] mb-8 text-center">Contáctanos</h2>
         <form action="{{ route('contact.store') }}" method="POST" class="bg-white p-8 rounded-2xl shadow-xl">
