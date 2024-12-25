@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\News;
 use Illuminate\Http\Request;    
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PublisherController extends Controller
 {
@@ -106,6 +107,25 @@ public function deleteNews($id)
     return redirect()->route('publisher.dashboard')->with('success', 'Noticia eliminada con éxito.');
 }
 
+public function uploadImage(Request $request)
+    {
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $fileName = time() . '_' . $image->getClientOriginalName();
+            
+            // Guardar en storage/app/public/uploads
+            $path = $image->storeAs('public/uploads', $fileName);
+            
+            // Devolver la URL pública
+            return response()->json([
+                'url' => Storage::url($path)
+            ]);
+        }
+        
+        return response()->json([
+            'error' => 'No se pudo subir la imagen'
+        ], 400);
+    }
   
 
 }

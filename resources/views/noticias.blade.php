@@ -7,7 +7,8 @@
         @foreach ($allNews as $item)
             <div class="max-w-xl mx-auto bg-white shadow-md rounded-md mb-4 p-6">
                 <h3 class="text-xl font-semibold mb-2">{{ $item->title }}</h3>
-                <p class="text-gray-700">{{ $item->content }}</p>
+                
+                <div class="text-gray-700 prose max-w-none">{!! $item->content !!}</div>
                 <p class="text-sm text-gray-500 mt-4">Publicado el: {{ $item->created_at->format('d/m/Y') }}</p>
             </div>
         @endforeach
