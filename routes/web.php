@@ -78,9 +78,6 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsPublisher::class])
 // Ruta para mostrar las noticias
 Route::get('/noticias', [PublisherController::class, 'showNews'])->name('noticias');
 
-
-
-
 Route::post('/upload-image', [PublisherController::class, 'uploadImage'])
     ->name('upload.image')
     ->middleware(['auth', 'web']);

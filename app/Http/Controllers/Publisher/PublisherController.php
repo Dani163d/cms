@@ -39,7 +39,7 @@ class PublisherController extends Controller
             $news->user_id = Auth::id();
             $news->save();
 
-            return redirect()->route('noticias')
+            return redirect()->route('publisher.dashboard')
                            ->with('success', 'Noticia publicada exitosamente');
 
         } catch (\Exception $e) {

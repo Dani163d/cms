@@ -76,29 +76,6 @@
     </div>
 </section>
 
-<section id="equipo" class="mt-16 text-center bg-[#02311a] min-h-screen" data-show-on-scroll>
-    <h2 class="text-3xl font-semibold text-white mb-8">Nuestro Equipo</h2>
-    <div class="grid sm:grid-cols-1 md:grid-cols-3 gap-12 px-4">
-        @foreach([
-            ['nombre' => 'María Rodríguez', 'cargo' => 'Directora de Orientación Vocacional', 'imagen' => 'persona1.jpg'],
-            ['nombre' => 'Carlos Mendoza', 'cargo' => 'Psicólogo Vocacional', 'imagen' => 'persona2.jpg'],
-            ['nombre' => 'Laura Sánchez', 'cargo' => 'Consultora Académica', 'imagen' => 'persona3.jpg']
-        ] as $index => $miembro)
-        <div class="text-center" data-show-on-scroll>
-            <div class="mb-4 flex justify-center">
-                <img src="{{ asset('img/team/'.$miembro['imagen']) }}" alt="{{ $miembro['nombre'] }}" 
-                     class="w-48 h-48 object-cover rounded-full shadow-lg">
-            </div>
-            <h3 class="text-xl font-semibold text-[#02311a]">
-                {{ $miembro['nombre'] }}
-            </h3>
-            <p class="text-white">
-                {{ $miembro['cargo'] }}
-            </p>
-        </div>
-        @endforeach
-    </div>
-</section>
 
 <section id="contacto" class="mt-16 px-4 py-16 bg-gray-50 min-h-screen">
     <div class="container mx-auto max-w-lg">
