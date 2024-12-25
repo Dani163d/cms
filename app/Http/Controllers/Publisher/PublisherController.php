@@ -108,24 +108,24 @@ public function deleteNews($id)
 }
 
 public function uploadImage(Request $request)
-    {
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $fileName = time() . '_' . $image->getClientOriginalName();
-            
-            // Guardar en storage/app/public/uploads
-            $path = $image->storeAs('public/uploads', $fileName);
-            
-            // Devolver la URL pública
-            return response()->json([
-                'url' => Storage::url($path)
-            ]);
-        }
+{
+    if ($request->hasFile('image')) {
+        $image = $request->file('image');
         
+        if (!$image->isValid() || !in_array($image->getClientMimeType(), ['image/jpeg', 'image/png', 'image/gif'])) {
+            return response()->json(['error' => 'Archivo inválido'], 400);
+        }
+
+        $fileName = uniqid() . '_' . $image->getClientOriginalName();
+        $path = $image->storeAs('public/uploads', $fileName);
+
         return response()->json([
-            'error' => 'No se pudo subir la imagen'
-        ], 400);
+            'url' => asset('storage/uploads/' . $fileName)
+        ]);
     }
+
+    return response()->json(['error' => 'No se encontró imagen'], 400);
+}
   
 
 }

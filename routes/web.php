@@ -80,5 +80,6 @@ Route::get('/noticias', [PublisherController::class, 'showNews'])->name('noticia
 
 
 
-
-Route::post('/upload-image', [PublisherController::class, 'uploadImage'])->name('upload.image');
+Route::post('/upload-image', [PublisherController::class, 'uploadImage'])
+    ->name('upload.image')
+    ->middleware(['auth', 'web']);

@@ -76,25 +76,24 @@
         }
 
         upload() {
-            return this.loader.file.then(file => {
-                const formData = new FormData();
-                formData.append('image', file);
-                
-                return fetch('/upload-image', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    }
-                })
-                .then(response => response.json())
-                .then(response => {
-                    return {
-                        default: response.url
-                    };
-                });
-            });
-        }
+    return this.loader.file.then(file => {
+        const formData = new FormData();
+        formData.append('image', file);
+        
+        return fetch('/upload-image', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(response => response.json())
+        .catch(error => {
+            console.error('Error:', error);
+            return Promise.reject('Upload failed');
+        });
+    });
+}
 
         abort() {
             // Abort upload
