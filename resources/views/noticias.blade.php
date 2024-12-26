@@ -4,11 +4,11 @@
 <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
     <!-- Encabezado Hero -->
     <div class="max-w-7xl mx-auto text-center mb-16">
-        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+        <h1 class="text-4xl md:text-5xl font-bold text-[#02311a] mb-4">
             Últimas Noticias
         </h1>
         <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-            Mantente informado con las últimas actualizaciones y noticias relevantes
+            Mantente informado con las últimas actualizaciones y noticias relevantes.
         </p>
     </div>
 
@@ -17,23 +17,20 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @foreach ($allNews as $item)
             <article class="bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1 flex flex-col">
-                <!-- Imagen destacada (si existe) -->
-                @if(preg_match('/<img[^>]+>/i', $item->content, $matches))
-                    <div class="aspect-w-16 aspect-h-9 overflow-hidden">
-                        {!! $matches[0] !!}
-                    </div>
-                @endif
-
-                <div class="p-6 flex flex-col flex-grow">
-                    <!-- Fecha -->
-                    <div class="text-sm text-blue-600 mb-2">
-                        {{ $item->created_at->format('d M, Y') }}
-                    </div>
-
+                <!-- Bloque verde para el título -->
+                <div class="bg-[#02311a] text-white p-4">
                     <!-- Título -->
-                    <h2 class="text-xl font-bold text-gray-900 mb-3 hover:text-blue-600 transition-colors">
+                    <h2 class="text-xl font-bold hover:text-[#1d4b2b] transition-colors">
                         {{ $item->title }}
                     </h2>
+                </div>
+
+                <!-- Contenido de la noticia -->
+                <div class="p-6 flex flex-col flex-grow">
+                    <!-- Fecha -->
+                    <div class="text-sm text-[#02311a] mb-2">
+                        {{ $item->created_at->format('d M, Y') }}
+                    </div>
 
                     <!-- Extracto del contenido -->
                     <div class="prose prose-sm text-gray-600 mb-4 flex-grow">
@@ -41,16 +38,16 @@
                     </div>
 
                     <!-- Footer -->
-                    <div class="pt-4 border-t border-gray-100 mt-auto">
+                    <div class="pt-4 border-t border-[#02311a] mt-auto">
                         <div class="flex items-center justify-between">
-                            <span class="inline-flex items-center text-sm text-gray-500">
+                            <span class="inline-flex items-center text-sm text-[#6c757d]">
                                 <svg class="w-4 h-4 mr-1.5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
                                 </svg>
                                 {{ $item->created_at->diffForHumans() }}
                             </span>
 
-                            <button class="text-sm text-blue-600 hover:text-blue-800 font-medium inline-flex items-center">
+                            <button class="text-sm text-[#02311a] hover:text-[#1d4b2b] font-medium inline-flex items-center">
                                 Leer más
                                 <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -59,6 +56,13 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Imagen destacada (si existe) -->
+                @if(preg_match('/<img[^>]+>/i', $item->content, $matches))
+                    <div class="aspect-w-16 aspect-h-9 overflow-hidden">
+                        {!! $matches[0] !!}
+                    </div>
+                @endif
             </article>
             @endforeach
         </div>

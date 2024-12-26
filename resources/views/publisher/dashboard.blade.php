@@ -5,7 +5,7 @@
     <div class="max-w-7xl mx-auto">
         <!-- Encabezado -->
         <div class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-gray-900 mb-2">Panel de Publicador</h1>
+            <h1 class="text-4xl font-bold text-[#02311a] mb-2">Panel de Publicador</h1>
             <p class="text-gray-600">Gestiona y publica contenido de manera eficiente</p>
         </div>
 
@@ -42,7 +42,7 @@
                 </div>
                 <div class="flex justify-end">
                     <button type="submit"
-                        class="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition-all duration-300">
+                        class="px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition-all duration-300">
                         Publicar Noticia
                     </button>
                 </div>
@@ -55,6 +55,13 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($news as $item)
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <!-- Bloque verde para el título -->
+                    <div class="bg-[#02311a] text-white p-4">
+                        <h3 class="text-xl font-bold hover:text-[#1d4b2b] transition-colors">
+                            {{ $item->title }}
+                        </h3>
+                    </div>
+
                     <!-- Contenedor de imagen -->
                     @if(preg_match('/<img[^>]+>/i', $item->content, $matches))
                     <div class="relative h-48 overflow-hidden">
@@ -71,10 +78,7 @@
                             <span>{{ $item->created_at->format('d/m/Y') }}</span>
                         </div>
 
-                        <!-- Título -->
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">{{ $item->title }}</h3>
-
-                        <!-- Contenido truncado -->
+                        <!-- Extracto del contenido -->
                         <div class="prose prose-sm text-gray-600 mb-4 line-clamp-3">
                             {!! Str::limit(strip_tags($item->content), 150) !!}
                         </div>
@@ -149,7 +153,6 @@
 }
 </style>
 
-
 @push('scripts')
 <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 <style>
@@ -164,24 +167,24 @@
         }
 
         upload() {
-    return this.loader.file.then(file => {
-        const formData = new FormData();
-        formData.append('image', file);
-        
-        return fetch('/upload-image', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
-        .then(response => response.json())
-        .catch(error => {
-            console.error('Error:', error);
-            return Promise.reject('Upload failed');
-        });
-    });
-}
+            return this.loader.file.then(file => {
+                const formData = new FormData();
+                formData.append('image', file);
+                
+                return fetch('/upload-image', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .catch(error => {
+                    console.error('Error:', error);
+                    return Promise.reject('Upload failed');
+                });
+            });
+        }
 
         abort() {
             // Abort upload
