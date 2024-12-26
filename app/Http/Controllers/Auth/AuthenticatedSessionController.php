@@ -39,7 +39,7 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('publisher.dashboard');
         }
     
-        return redirect()->route('dashboard'); // Redirige a la página de dashboard normal
+        return redirect()->route('noticias'); // Redirige a la página de dashboard normal
     }
     
     /**
