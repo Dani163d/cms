@@ -22,32 +22,33 @@
         @endif
 
         <!-- Formulario de creación -->
-        <div class="mb-12 bg-white rounded-xl shadow-lg overflow-hidden">
-            <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
-                <h2 class="text-2xl font-bold text-gray-800">Crear Nueva Noticia</h2>
+        <div class="mb-12 bg-white rounded-xl shadow-lg overflow-hidden max-w-4xl mx-auto">
+    <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+        <h2 class="text-2xl font-bold text-gray-800">Crear Nueva Noticia</h2>
+    </div>
+    <form action="{{ route('publisher.storeNews') }}" method="POST" class="p-6">
+        @csrf
+        <div class="grid gap-6 mb-6">
+            <div>
+                <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">Título</label>
+                <input type="text" id="title" name="title" required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    placeholder="Ingresa el título de la noticia">
             </div>
-            <form action="{{ route('publisher.storeNews') }}" method="POST" class="p-6">
-                @csrf
-                <div class="grid gap-6 mb-6">
-                    <div>
-                        <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">Título</label>
-                        <input type="text" id="title" name="title" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                            placeholder="Ingresa el título de la noticia">
-                    </div>
-                    <div>
-                        <label for="content" class="block text-sm font-semibold text-gray-700 mb-2">Contenido</label>
-                        <textarea id="content" name="content"></textarea>
-                    </div>
-                </div>
-                <div class="flex justify-end">
-                    <button type="submit"
-                        class="px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition-all duration-300">
-                        Publicar Noticia
-                    </button>
-                </div>
-            </form>
+            <div>
+                <label for="content" class="block text-sm font-semibold text-gray-700 mb-2">Contenido</label>
+                <textarea id="content" name="content"></textarea>
+            </div>
         </div>
+        <div class="flex justify-end">
+            <button type="submit"
+            class="px-6 py-2 bg-[#02311a] text-white font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#02311a] transition-colors">
+                Publicar Noticia
+            </button>
+        </div>
+    </form>
+</div>
+
 
         <!-- Lista de noticias -->
         <div>
