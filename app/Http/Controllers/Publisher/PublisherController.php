@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Publisher;
 
 use App\Http\Controllers\Controller;
@@ -12,16 +11,28 @@ class PublisherController extends Controller
 {
     public function dashboard()
     {
-        $news = News::where('user_id', Auth::id())
-                    ->orderBy('created_at', 'desc')
-                    ->get();
-    
+        $user = Auth::user();
+
+        // Si es admin, mostramos todas las noticias, sino solo las del usuario
+        $news = $user->roles->firstWhere('name', 'admin') 
+            ? News::orderBy('created_at', 'desc')->get()
+            : News::where('user_id', Auth::id())
+                ->orderBy('created_at', 'desc')
+                ->get();
+
         return view('publisher.dashboard', compact('news'));
     }
-    
+
     public function showNews()
     {
-        $allNews = News::orderBy('created_at', 'desc')->get();
+        // Si es admin, mostramos todas las noticias, sino solo las del usuario
+        $user = Auth::user();
+        $allNews = $user->roles->firstWhere('name', 'admin') 
+            ? News::orderBy('created_at', 'desc')->get()
+            : News::where('user_id', Auth::id())
+                ->orderBy('created_at', 'desc')
+                ->get();
+
         return view('noticias', compact('allNews'));
     }
 
@@ -50,50 +61,51 @@ class PublisherController extends Controller
     }
 
     public function uploadImage(Request $request)
-{
-    if (!$request->hasFile('image')) {
-        return response()->json([
-            'error' => 'No image file uploaded'
-        ], 400);
+    {
+        if (!$request->hasFile('image')) {
+            return response()->json([
+                'error' => 'No image file uploaded'
+            ], 400);
+        }
+
+        try {
+            $file = $request->file('image');
+            
+            // Validar el archivo
+            $validated = $request->validate([
+                'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+            ]);
+
+            // Generar un nombre único para la imagen
+            $fileName = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+            
+            // Guardar la imagen en storage/app/public/images
+            $path = $file->storeAs('public/images', $fileName);
+            
+            // Generar la URL pública
+            $url = Storage::url($path);
+
+            return response()->json([
+                'uploaded' => true,
+                'url' => $url
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'uploaded' => false,
+                'error' => [
+                    'message' => 'Error al subir la imagen: ' . $e->getMessage()
+                ]
+            ], 500);
+        }
     }
-
-    try {
-        $file = $request->file('image');
-        
-        // Validar el archivo
-        $validated = $request->validate([
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
-        ]);
-
-        // Generar un nombre único para la imagen
-        $fileName = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
-        
-        // Guardar la imagen en storage/app/public/images
-        $path = $file->storeAs('public/images', $fileName);
-        
-        // Generar la URL pública
-        $url = Storage::url($path);
-
-        return response()->json([
-            'uploaded' => true,
-            'url' => $url
-        ]);
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'uploaded' => false,
-            'error' => [
-                'message' => 'Error al subir la imagen: ' . $e->getMessage()
-            ]
-        ], 500);
-    }
-}
 
     public function editNews($id)
     {
         $news = News::findOrFail($id);
 
-        if ($news->user_id != Auth::id()) {
+        // Si el usuario es admin o dueño de la noticia, permite la edición
+        if ($news->user_id != Auth::id() && !Auth::user()->roles->firstWhere('name', 'admin')) {
             return redirect()->route('publisher.dashboard')
                            ->with('error', 'No tienes permiso para editar esta noticia.');
         }
@@ -110,9 +122,10 @@ class PublisherController extends Controller
 
         $news = News::findOrFail($id);
 
-        if ($news->user_id != Auth::id()) {
+        // Si el usuario es admin o dueño de la noticia, permite la actualización
+        if ($news->user_id != Auth::id() && !Auth::user()->roles->firstWhere('name', 'admin')) {
             return redirect()->route('publisher.dashboard')
-                           ->with('error', 'No tienes permiso para editar esta noticia.');
+                           ->with('error', 'No tienes permiso para actualizar esta noticia.');
         }
 
         try {
@@ -134,7 +147,8 @@ class PublisherController extends Controller
     {
         $news = News::findOrFail($id);
 
-        if ($news->user_id != Auth::id()) {
+        // Si el usuario es admin o dueño de la noticia, permite la eliminación
+        if ($news->user_id != Auth::id() && !Auth::user()->roles->firstWhere('name', 'admin')) {
             return redirect()->route('publisher.dashboard')
                            ->with('error', 'No tienes permiso para eliminar esta noticia.');
         }

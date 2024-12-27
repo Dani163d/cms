@@ -30,10 +30,11 @@ class EnsureUserIsPublisher
         Log::info('User roles: ' . $roles->implode(', '));
 
         // Verificación de rol de admin
-        if (!$request->user()->hasRole('publisher')) {
-            Log::warning('User does not have publisher role');
-            abort(403, 'Acceso no autorizado.');
-        }
+        if (!$request->user()->hasRole('publisher') && !$request->user()->hasRole('admin')) {
+    Log::warning('User does not have publisher or admin role');
+    abort(403, 'Acceso no autorizado.');
+}
+
 
         Log::info('Publisher Middleware: Passed');
         return $next($request);

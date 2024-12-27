@@ -57,7 +57,6 @@ Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('adm
 Route::post('/admin/create-user', [AdminController::class, 'createUser'])->name('admin.createUser');
 
 
-
     
 
 use App\Http\Controllers\Publisher\PublisherController;

@@ -30,6 +30,7 @@
             @if(auth()->user()->hasRole('admin'))
                 <li><a href="{{ route('admin.dashboard') }}" class="hover:text-[#0cad56]">Registrar Publicador</a></li>
                 <li><a href="{{ route('admin.manageUsers') }}" class="hover:text-[#0cad56]">Ver Todos los Usuarios</a></li>
+                <li><a href="{{ route('publisher.dashboard') }}" class="hover:text-[#0cad56]">Gestionar Todas las Noticias</a></li>
             @endif
             <li>
                 <form method="POST" action="{{ route('logout') }}" class="inline">
