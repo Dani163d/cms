@@ -387,6 +387,185 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
+<script>
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Elementos del DOM
+    const modal = document.getElementById('newsModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalContent = document.getElementById('modalContent');
+    const modalImage = document.getElementById('modalImage');
+    const closeModal = document.getElementById('closeModal');
+    const articles = document.querySelectorAll('article');
+    const hero = document.querySelector('.hero-section');
+
+    // Función para decodificar entidades HTML
+    const decodeHTMLEntities = (text) => {
+        const textarea = document.createElement('textarea');
+        textarea.innerHTML = text;
+        return textarea.value;
+    };
+
+    // Función para limpiar HTML y mantener formato básico
+    const cleanHTML = (html) => {
+        // Crear un elemento temporal
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+
+        // Remover scripts y estilos
+        const scripts = temp.getElementsByTagName('script');
+        const styles = temp.getElementsByTagName('style');
+        for (let el of [...scripts, ...styles]) {
+            el.remove();
+        }
+
+        // Procesar imágenes
+        const images = temp.getElementsByTagName('img');
+        for (let img of images) {
+            const figure = document.createElement('figure');
+            const imgClone = img.cloneNode(true);
+            figure.appendChild(imgClone);
+            if (img.alt) {
+                const figcaption = document.createElement('figcaption');
+                figcaption.textContent = img.alt;
+                figure.appendChild(figcaption);
+            }
+            img.parentNode.replaceChild(figure, img);
+        }
+
+        // Obtener el texto limpio
+        let cleanText = temp.innerHTML
+            .replace(/<\/?[^>]+(>|$)/g, "")  // Remover todas las etiquetas HTML
+            .replace(/&nbsp;/g, " ")         // Reemplazar &nbsp; por espacios
+            .replace(/\s+/g, " ")            // Normalizar espacios
+            .trim();
+
+        // Formatear el texto en párrafos
+        return cleanText.split('\n')
+            .filter(line => line.trim() !== '')
+            .map(line => `<p>${line.trim()}</p>`)
+            .join('');
+    };
+
+    // Animaciones de entrada
+    articles.forEach((article, index) => {
+        article.style.animationDelay = `${index * 0.1}s`;
+    });
+
+    // Funciones del Modal
+    const openModal = () => {
+        modal.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            modal.style.opacity = '1';
+            modal.querySelector('.bg-white').style.transform = 'scale(1)';
+        });
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closeModalWithAnimation = () => {
+        modal.style.opacity = '0';
+        modal.querySelector('.bg-white').style.transform = 'scale(0.9)';
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            modalContent.innerHTML = '';
+            modalTitle.textContent = '';
+            if (modalImage.querySelector('img')) {
+                modalImage.querySelector('img').src = '';
+            }
+            modalImage.classList.add('hidden');
+        }, 300);
+    };
+
+    // Event Listeners
+    document.querySelectorAll('.read-more-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const title = button.dataset.title;
+            const content = button.dataset.content;
+            const image = button.dataset.image;
+            
+            // Establecer título decodificado
+            modalTitle.textContent = decodeHTMLEntities(title);
+            
+            // Limpiar y establecer contenido
+            const cleanedContent = cleanHTML(decodeHTMLEntities(content));
+            modalContent.innerHTML = cleanedContent;
+
+            // Manejar imagen
+            if (image && image !== 'undefined' && image !== '') {
+                const modalImg = modalImage.querySelector('img');
+                modalImg.src = image;
+                modalImage.classList.remove('hidden');
+            } else {
+                modalImage.classList.add('hidden');
+            }
+
+            openModal();
+            modal.querySelector('.bg-white').scrollTop = 0;
+        });
+    });
+
+    closeModal.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeModalWithAnimation();
+    });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModalWithAnimation();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            closeModalWithAnimation();
+        }
+    });
+
+    // Parallax Effect
+    let ticking = false;
+    let lastScrollY = window.scrollY;
+    const parallaxFactor = 0.5;
+
+    window.addEventListener('scroll', () => {
+        lastScrollY = window.scrollY;
+        
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                if (hero) {
+                    hero.style.transform = `translate3d(0, ${lastScrollY * parallaxFactor}px, 0)`;
+                }
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+
+    // Función para manejar imágenes en el contenido
+    const processContentImages = () => {
+        const images = modalContent.getElementsByTagName('img');
+        for (let img of images) {
+            img.classList.add('content-image');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'image-wrapper';
+            img.parentNode.insertBefore(wrapper, img);
+            wrapper.appendChild(img);
+        }
+    };
+
+    // Observer para monitorear cambios en el contenido
+    const observer = new MutationObserver(() => {
+        processContentImages();
+    });
+
+    observer.observe(modalContent, {
+        childList: true,
+        subtree: true
+    });
+});
+
+
+</script>
 @endpush
 
 @endsection
