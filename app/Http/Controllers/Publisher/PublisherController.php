@@ -27,7 +27,7 @@ class PublisherController extends Controller
     {
         // Si es admin, mostramos todas las noticias, sino solo las del usuario
         $user = Auth::user();
-        $allNews = $user->roles->firstWhere('name', 'admin') 
+        $allNews = News::orderBy('created_at', 'desc')->paginate(9) 
             ? News::orderBy('created_at', 'desc')->get()
             : News::where('user_id', Auth::id())
                 ->orderBy('created_at', 'desc')
