@@ -23,8 +23,7 @@
     <ul class="flex space-x-6">
         @guest
             <li><a href="{{ route('home') }}" class="hover:text-[#0cad56]">Inicio</a></li>
-            <li><a class="hover:text-[#0cad56]">Sobre Nosotros</a></li>
-            <li><a class="hover:text-[#0cad56]">Contáctanos</a></li>
+            <li><a href="#nosotros" class="hover:text-[#0cad56]">Sobre Nosotros</a></li>
             <li><a href="{{ route('login') }}" class="hover:text-[#0cad56]">Login</a></li>
         @else
             @if(auth()->user()->hasRole('admin'))
@@ -70,8 +69,8 @@
                     <h4 class="font-bold mb-4">Enlaces Rápidos</h4>
                     <ul>
                         <li><a href="{{ route('home') }}" class="hover:text-[#0cad56]">Inicio</a></li>
-                        <li><a class="text-white hover:underline">Sobre Nosotros</a></li>
-                        <li><a class="text-white hover:underline">Contáctanos</a></li>
+                        <li><a href="#nosotros"  class="text-white hover:underline">Sobre Nosotros</a></li>
+                        <li><a href="#contactos" class="text-white hover:underline">Contáctanos</a></li>
                     </ul>
                 </div>
                 <div>
