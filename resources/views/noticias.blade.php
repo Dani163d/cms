@@ -1,8 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-16">
-    <!-- Hero Section con Efecto Parallax -->
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-4">
     <div class="relative overflow-hidden mb-16 hero-section">
         <div class="absolute inset-0 bg-[#02311a] opacity-90"></div>
         <div class="max-w-7xl mx-auto relative z-10 py-20 px-4">
@@ -18,11 +17,36 @@
 
     <!-- Grid de Noticias -->
     <div class="max-w-7xl mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            @foreach ($allNews as $item)
-            <article class="bg-white rounded-2xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1 flex flex-col group">
-                <!-- Imagen destacada -->
+        <div class="grid grid-cols-12 gap-8">
+            @foreach ($allNews as $index => $item)
                 @php
+                    // Determinar el tamaño de la tarjeta basado en el índice
+                    $cardSize = match($index % 7) {
+                        0 => 'col-span-12 md:col-span-8', // Grande
+                        1 => 'col-span-12 md:col-span-4', // Mediana
+                        2 => 'col-span-12 md:col-span-6', // Mediana
+                        3 => 'col-span-12 md:col-span-6', // Mediana
+                        4 => 'col-span-12 md:col-span-4', // Pequeña
+                        5 => 'col-span-12 md:col-span-4', // Pequeña
+                        6 => 'col-span-12 md:col-span-4', // Pequeña
+                        default => 'col-span-12 md:col-span-4'
+                    };
+
+                    // Determinar la altura de la imagen basada en el tamaño de la tarjeta
+                    $imageHeight = match($index % 7) {
+                        0 => 'h-96', // Grande
+                        1, 2, 3 => 'h-64', // Mediana
+                        default => 'h-48' // Pequeña
+                    };
+
+                    // Determinar el límite de texto
+                    $textLimit = match($index % 7) {
+                        0 => 300, // Grande
+                        1, 2, 3 => 200, // Mediana
+                        default => 150 // Pequeña
+                    };
+
+                    // Procesar la imagen
                     $doc = new DOMDocument();
                     libxml_use_internal_errors(true);
                     $doc->loadHTML($item->content);
@@ -31,67 +55,69 @@
                     $imgNode = $xpath->query("//img")->item(0);
                 @endphp
 
-                <div class="relative h-48 overflow-hidden bg-gradient-to-r from-[#02311a] to-[#0cad56]">
-                    @if($imgNode)
-                        <img src="{{ $imgNode->getAttribute('src') }}" 
-                             alt="Imagen de la noticia"
-                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                    @else
-                        <div class="flex items-center justify-center h-full">
-                            <svg class="w-16 h-16 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                            </svg>
-                        </div>
-                    @endif
-                    <!-- Overlay con fecha -->
-                    <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium text-gray-700">
-                        {{ $item->created_at->format('d M, Y') }}
-                    </div>
-                </div>
-
-                <!-- Contenido -->
-                <div class="p-6 flex flex-col flex-grow">
-                    <h2 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#0cad56] transition-colors line-clamp-2">
-                        {{ $item->title }}
-                    </h2>
-
-                    <div class="prose prose-sm text-gray-600 mb-4 flex-grow">
-                        {!! Str::limit(strip_tags($item->content), 150) !!}
-                    </div>
-
-                    <!-- Footer -->
-                    <div class="pt-4 border-t border-gray-100 mt-auto">
-                        <div class="flex items-center justify-between">
-                            <span class="flex items-center text-sm text-gray-500">
-                                <svg class="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"/>
+                <article class="{{ $cardSize }} bg-white rounded-2xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1 flex flex-col group">
+                    <!-- Imagen destacada -->
+                    <div class="relative {{ $imageHeight }} overflow-hidden bg-gradient-to-r from-[#02311a] to-[#0cad56]">
+                        @if($imgNode)
+                            <img src="{{ $imgNode->getAttribute('src') }}" 
+                                 alt="Imagen de la noticia"
+                                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        @else
+                            <div class="flex items-center justify-center h-full">
+                                <svg class="w-16 h-16 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                                 </svg>
-                                {{ $item->created_at->diffForHumans() }}
-                            </span>
-
-                            <button 
-                                class="read-more-btn inline-flex items-center px-4 py-2 bg-[#02311a] text-white rounded-lg hover:bg-[#0cad56] transition-colors duration-300"
-                                data-id="{{ $item->id }}"
-                                data-content="{{ htmlspecialchars($item->content) }}"
-                                data-title="{{ $item->title }}"
-                                data-image="{{ $imgNode ? $imgNode->getAttribute('src') : '' }}">
-                                <span>Leer más</span>
-                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                                </svg>
-                            </button>
+                            </div>
+                        @endif
+                        <!-- Overlay con fecha -->
+                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium text-gray-700">
+                            {{ $item->created_at->format('d M, Y') }}
                         </div>
                     </div>
-                </div>
-            </article>
+
+                    <!-- Contenido -->
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h2 class="text-xl {{ $index % 7 === 0 ? 'md:text-2xl' : '' }} font-bold text-gray-900 mb-3 group-hover:text-[#0cad56] transition-colors line-clamp-2">
+                            {{ $item->title }}
+                        </h2>
+
+                        <div class="prose prose-sm text-gray-600 mb-4 flex-grow">
+                            {!! Str::limit(strip_tags($item->content), $textLimit) !!}
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="pt-4 border-t border-gray-100 mt-auto">
+                            <div class="flex items-center justify-between">
+                                <span class="flex items-center text-sm text-gray-500">
+                                    <svg class="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"/>
+                                    </svg>
+                                    {{ $item->created_at->diffForHumans() }}
+                                </span>
+
+                                <button 
+                                    class="read-more-btn inline-flex items-center px-4 py-2 bg-[#02311a] text-white rounded-lg hover:bg-[#0cad56] transition-colors duration-300"
+                                    data-id="{{ $item->id }}"
+                                    data-content="{{ htmlspecialchars($item->content) }}"
+                                    data-title="{{ $item->title }}"
+                                    data-image="{{ $imgNode ? $imgNode->getAttribute('src') : '' }}">
+                                    <span>Leer más</span>
+                                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
             @endforeach
         </div>
 
         <!-- Paginación -->
         @if(method_exists($allNews, 'links'))
-        <div class="mt-12">
-            {{ $allNews->links() }}
-        </div>
+            <div class="mt-12">
+                {{ $allNews->links() }}
+            </div>
         @endif
     </div>
 </div>
@@ -367,24 +393,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Parallax Effect
-    let ticking = false;
-    let lastScrollY = window.scrollY;
-    const parallaxFactor = 0.5;
-
-    window.addEventListener('scroll', () => {
-        lastScrollY = window.scrollY;
-        
-        if (!ticking) {
-            window.requestAnimationFrame(() => {
-                if (hero) {
-                    hero.style.transform = `translate3d(0, ${lastScrollY * parallaxFactor}px, 0)`;
-                }
-                ticking = false;
-            });
-            ticking = true;
-        }
-    });
 });
 </script>
 <script>
@@ -522,24 +530,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Parallax Effect
-    let ticking = false;
-    let lastScrollY = window.scrollY;
-    const parallaxFactor = 0.5;
-
-    window.addEventListener('scroll', () => {
-        lastScrollY = window.scrollY;
-        
-        if (!ticking) {
-            window.requestAnimationFrame(() => {
-                if (hero) {
-                    hero.style.transform = `translate3d(0, ${lastScrollY * parallaxFactor}px, 0)`;
-                }
-                ticking = false;
-            });
-            ticking = true;
-        }
-    });
 
     // Función para manejar imágenes en el contenido
     const processContentImages = () => {
