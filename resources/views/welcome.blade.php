@@ -16,10 +16,7 @@
             pruebas de interés y orientación profesional.
         </p>
         <div class="space-x-4">
-            <a href="#servicios" class="inline-block bg-[#02311a] text-white px-5 py-2.5 rounded-lg hover:bg-[#0cad56] transition-all duration-300 transform hover:scale-105 shadow-lg text-sm">
-                Más Información
-            </a>
-            <a href="#contacto" class="inline-block border-2 border-[#02311a] text-[#02311a] px-5 py-2.5 rounded-lg hover:bg-[#dafee9] transition-all duration-300 transform hover:scale-105 text-sm">
+            <a href="#contacto" class="inline-block bg-[#02311a] text-white px-5 py-3 rounded-lg hover:bg-[#0cad56] transition-all duration-300 transform hover:scale-105 shadow-lg text-sm">
                 Contáctanos
             </a>
         </div>
