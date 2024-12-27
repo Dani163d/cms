@@ -83,3 +83,8 @@ Route::post('/upload-image', [PublisherController::class, 'uploadImage'])
     ->middleware(['auth', 'web']);
 
     Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+
+
+    Route::post('/upload-image', [PublisherController::class, 'uploadImage'])
+    ->name('publisher.upload.image')
+    ->middleware('auth');

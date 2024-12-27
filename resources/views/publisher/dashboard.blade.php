@@ -156,35 +156,37 @@
 
 @push('scripts')
 <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
-<style>
-    .ck-editor__editable {
-        min-height: 300px !important;
-    }
-</style>
 <script>
-    class CustomUploadAdapter {
+    class MyUploadAdapter {
         constructor(loader) {
             this.loader = loader;
         }
 
         upload() {
-            return this.loader.file.then(file => {
-                const formData = new FormData();
-                formData.append('image', file);
-                
-                return fetch('/upload-image', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    }
-                })
-                .then(response => response.json())
-                .catch(error => {
-                    console.error('Error:', error);
-                    return Promise.reject('Upload failed');
-                });
-            });
+            return this.loader.file
+                .then(file => new Promise((resolve, reject) => {
+                    const formData = new FormData();
+                    formData.append('image', file);
+
+                    fetch('{{ route("publisher.upload.image") }}', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(response => {
+                        if (response.uploaded) {
+                            resolve({
+                                default: response.url
+                            });
+                        } else {
+                            reject(response.error.message);
+                        }
+                    })
+                    .catch(error => reject(error));
+                }));
         }
 
         abort() {
@@ -192,15 +194,15 @@
         }
     }
 
-    function CustomUploadAdapterPlugin(editor) {
+    function MyCustomUploadAdapterPlugin(editor) {
         editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-            return new CustomUploadAdapter(loader);
+            return new MyUploadAdapter(loader);
         };
     }
 
     ClassicEditor
         .create(document.querySelector('#content'), {
-            extraPlugins: [CustomUploadAdapterPlugin],
+            extraPlugins: [MyCustomUploadAdapterPlugin],
             toolbar: {
                 items: [
                     'heading',
@@ -218,20 +220,18 @@
                     'redo'
                 ]
             },
-            language: 'es'
-        })
-        .then(newEditor => {
-            editor = newEditor;
+            image: {
+                toolbar: [
+                    'imageStyle:full',
+                    'imageStyle:side',
+                    '|',
+                    'imageTextAlternative'
+                ]
+            }
         })
         .catch(error => {
             console.error(error);
         });
-
-    document.querySelector('form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        document.querySelector('#content').value = editor.getData();
-        this.submit();
-    });
 </script>
 @endpush
 @endsection

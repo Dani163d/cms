@@ -67,7 +67,7 @@ class PublisherController extends Controller
                 'error' => 'No image file uploaded'
             ], 400);
         }
-
+    
         try {
             $file = $request->file('image');
             
@@ -75,21 +75,21 @@ class PublisherController extends Controller
             $validated = $request->validate([
                 'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
             ]);
-
+    
             // Generar un nombre único para la imagen
             $fileName = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
             
-            // Guardar la imagen en storage/app/public/images
-            $path = $file->storeAs('public/images', $fileName);
+            // Guardar la imagen
+            $path = $file->storeAs('images', $fileName, 'public');
             
-            // Generar la URL pública
-            $url = Storage::url($path);
-
+            // Construir URL relativa
+            $url = '/storage/' . $path;
+    
             return response()->json([
                 'uploaded' => true,
                 'url' => $url
             ]);
-
+    
         } catch (\Exception $e) {
             return response()->json([
                 'uploaded' => false,
