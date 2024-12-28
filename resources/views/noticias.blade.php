@@ -91,16 +91,16 @@
                                     </span>
 
                                     <button 
-                                        class="read-more-btn inline-flex items-center px-4 py-2 bg-[#02311a] text-white rounded-lg hover:bg-[#0cad56] transition-colors duration-300 text-sm"
-                                        data-id="{{ $item->id }}"
-                                        data-content="{{ htmlspecialchars($item->content) }}"
-                                        data-title="{{ $item->title }}"
-                                        data-image="{{ $imgNode ? $imgNode->getAttribute('src') : '' }}">
-                                        <span>Leer más</span>
-                                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                                        </svg>
-                                    </button>
+    class="read-more-btn inline-flex items-center px-4 py-2 bg-[#02311a] text-white rounded-lg hover:bg-[#0cad56] transition-colors duration-300 text-sm"
+    data-id="{{ $item->id }}"
+    data-content="{{ htmlspecialchars($item->content) }}"
+    data-title="{{ $item->title }}"
+    data-image="{{ $imgNode ? $imgNode->getAttribute('src') : '' }}">
+    <span>Leer más</span>
+    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+    </svg>
+</button>
                                 </div>
                             </div>
                         </div>
@@ -133,8 +133,10 @@
                     </button>
                 </div>
 
-                <!-- Modal Image -->
-                <img id="modalImage" class="w-full h-64 object-cover rounded-lg mb-4" />
+                <!-- Modal Image Container -->
+                <div class="modal-image-container mb-4">
+                    <img id="modalImage" class="w-full h-64 object-cover rounded-lg" style="display: none;" alt="Imagen de la noticia">
+                </div>
 
                 <!-- Modal Content -->
                 <div id="modalContent" class="prose prose-sm max-w-none text-gray-700"></div>
@@ -225,249 +227,124 @@ article {
         @apply max-h-[250px];
     }
 }
+
+#modalImage {
+    max-width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: contain;
+    margin: 0 auto;
+    display: block;
+}
+
+.modal-image-container {
+    width: 100%;
+    max-height: 400px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 </style>
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('newsModal');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalContent = document.getElementById('modalContent');
-    const modalImage = document.getElementById('modalImage');
-    const closeModal = document.getElementById('closeModal');
-    const articles = document.querySelectorAll('article');
-    const hero = document.querySelector('.hero-section');
-
-    // Animaciones de entrada
-    articles.forEach((article, index) => {
-        article.style.animationDelay = `${index * 0.1}s`;
-    });
-
-    // Funciones del Modal
-    const openModal = () => {
-        modal.classList.remove('hidden');
-        requestAnimationFrame(() => {
-            modal.style.opacity = '1';
-            modal.querySelector('.bg-white').style.transform = 'scale(1)';
-        });
-        document.body.style.overflow = 'hidden';
-    };
-
-    const closeModalWithAnimation = () => {
-        modal.style.opacity = '0';
-        modal.querySelector('.bg-white').style.transform = 'scale(0.9)';
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-            modalContent.innerHTML = '';
-            modalTitle.textContent = '';
-            modalImage.querySelector('img').src = '';
-            modalImage.classList.add('hidden');
-        }, 300);
-    };
-
-    // Event Listeners
-    document.querySelectorAll('.read-more-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            const title = button.dataset.title;
-            const content = button.dataset.content;
-            const image = button.dataset.image;
-            
-            modalTitle.textContent = title;
-            modalContent.innerHTML = content;
-
-            if (image && image !== 'undefined' && image !== '') {
-                const modalImg = modalImage.querySelector('img');
-                modalImg.src = image;
-                modalImage.classList.remove('hidden');
-            } else {
-                modalImage.classList.add('hidden');
-            }
-
-            openModal();
-            modal.querySelector('.bg-white').scrollTop = 0;
-        });
-    });
-
-    closeModal.addEventListener('click', (e) => {
-        e.preventDefault();
-        closeModalWithAnimation();
-    });
-
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeModalWithAnimation();
-        }
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-            closeModalWithAnimation();
-        }
-    });
-
-});
-</script>
-<script>
-
 document.addEventListener('DOMContentLoaded', () => {
     // Elementos del DOM
     const modal = document.getElementById('newsModal');
     const modalTitle = document.getElementById('modalTitle');
     const modalContent = document.getElementById('modalContent');
     const modalImage = document.getElementById('modalImage');
-    const closeModal = document.getElementById('closeModal');
-    const articles = document.querySelectorAll('article');
-    const hero = document.querySelector('.hero-section');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const closeModalBtn2 = document.getElementById('closeModalBtn2');
 
-    // Función para decodificar entidades HTML
+    // Funciones de utilidad
     const decodeHTMLEntities = (text) => {
         const textarea = document.createElement('textarea');
         textarea.innerHTML = text;
         return textarea.value;
     };
 
-    // Función para limpiar HTML y mantener formato básico
-    const cleanHTML = (html) => {
-        // Crear un elemento temporal
-        const temp = document.createElement('div');
-        temp.innerHTML = html;
-
-        // Remover scripts y estilos
-        const scripts = temp.getElementsByTagName('script');
-        const styles = temp.getElementsByTagName('style');
-        for (let el of [...scripts, ...styles]) {
-            el.remove();
+    // Función para limpiar el contenido HTML y remover la primera imagen
+    const cleanContent = (content) => {
+        const div = document.createElement('div');
+        div.innerHTML = content;
+        
+        // Remover la primera imagen ya que se mostrará en modalImage
+        const firstImage = div.querySelector('img');
+        if (firstImage) {
+            firstImage.remove();
         }
-
-        // Procesar imágenes
-        const images = temp.getElementsByTagName('img');
-        for (let img of images) {
-            const figure = document.createElement('figure');
-            const imgClone = img.cloneNode(true);
-            figure.appendChild(imgClone);
-            if (img.alt) {
-                const figcaption = document.createElement('figcaption');
-                figcaption.textContent = img.alt;
-                figure.appendChild(figcaption);
-            }
-            img.parentNode.replaceChild(figure, img);
-        }
-
-        // Obtener el texto limpio
-        let cleanText = temp.innerHTML
-            .replace(/<\/?[^>]+(>|$)/g, "")  // Remover todas las etiquetas HTML
-            .replace(/&nbsp;/g, " ")         // Reemplazar &nbsp; por espacios
-            .replace(/\s+/g, " ")            // Normalizar espacios
-            .trim();
-
-        // Formatear el texto en párrafos
-        return cleanText.split('\n')
-            .filter(line => line.trim() !== '')
-            .map(line => `<p>${line.trim()}</p>`)
-            .join('');
+        
+        return div.innerHTML;
     };
-
-    // Animaciones de entrada
-    articles.forEach((article, index) => {
-        article.style.animationDelay = `${index * 0.1}s`;
-    });
 
     // Funciones del Modal
     const openModal = () => {
         modal.classList.remove('hidden');
-        requestAnimationFrame(() => {
+        setTimeout(() => {
             modal.style.opacity = '1';
-            modal.querySelector('.bg-white').style.transform = 'scale(1)';
-        });
+        }, 10);
         document.body.style.overflow = 'hidden';
     };
 
-    const closeModalWithAnimation = () => {
+    const closeModal = () => {
         modal.style.opacity = '0';
-        modal.querySelector('.bg-white').style.transform = 'scale(0.9)';
         setTimeout(() => {
             modal.classList.add('hidden');
             document.body.style.overflow = 'auto';
             modalContent.innerHTML = '';
             modalTitle.textContent = '';
-            if (modalImage.querySelector('img')) {
-                modalImage.querySelector('img').src = '';
-            }
-            modalImage.classList.add('hidden');
+            modalImage.src = '';
+            modalImage.style.display = 'none';
         }, 300);
     };
 
-    // Event Listeners
-    document.querySelectorAll('.read-more-btn').forEach(button => {
+    // Event Listeners para los botones "Leer más"
+    const readMoreButtons = document.querySelectorAll('.read-more-btn');
+    readMoreButtons.forEach(button => {
         button.addEventListener('click', () => {
             const title = button.dataset.title;
             const content = button.dataset.content;
-            const image = button.dataset.image;
+            const imageUrl = button.dataset.image;
             
-            // Establecer título decodificado
             modalTitle.textContent = decodeHTMLEntities(title);
             
-            // Limpiar y establecer contenido
-            const cleanedContent = cleanHTML(decodeHTMLEntities(content));
-            modalContent.innerHTML = cleanedContent;
-
-            // Manejar imagen
-            if (image && image !== 'undefined' && image !== '') {
-                const modalImg = modalImage.querySelector('img');
-                modalImg.src = image;
-                modalImage.classList.remove('hidden');
+            // Primero mostrar la imagen principal si existe
+            if (imageUrl && imageUrl !== 'undefined' && imageUrl !== '') {
+                modalImage.src = imageUrl;
+                modalImage.style.display = 'block';
             } else {
-                modalImage.classList.add('hidden');
+                modalImage.style.display = 'none';
             }
 
+            // Luego mostrar el contenido sin la primera imagen
+            const cleanedContent = cleanContent(decodeHTMLEntities(content));
+            modalContent.innerHTML = cleanedContent;
+
             openModal();
-            modal.querySelector('.bg-white').scrollTop = 0;
         });
     });
 
-    closeModal.addEventListener('click', (e) => {
-        e.preventDefault();
-        closeModalWithAnimation();
+    // Event Listeners para cerrar
+    [closeModalBtn, closeModalBtn2].forEach(btn => {
+        if (btn) {
+            btn.addEventListener('click', closeModal);
+        }
     });
 
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
-            closeModalWithAnimation();
+            closeModal();
         }
     });
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-            closeModalWithAnimation();
+            closeModal();
         }
-    });
-
-
-    // Función para manejar imágenes en el contenido
-    const processContentImages = () => {
-        const images = modalContent.getElementsByTagName('img');
-        for (let img of images) {
-            img.classList.add('content-image');
-            const wrapper = document.createElement('div');
-            wrapper.className = 'image-wrapper';
-            img.parentNode.insertBefore(wrapper, img);
-            wrapper.appendChild(img);
-        }
-    };
-
-    // Observer para monitorear cambios en el contenido
-    const observer = new MutationObserver(() => {
-        processContentImages();
-    });
-
-    observer.observe(modalContent, {
-        childList: true,
-        subtree: true
     });
 });
-
-
 </script>
 @endpush
 
