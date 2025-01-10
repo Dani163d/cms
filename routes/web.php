@@ -2,9 +2,9 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+use App\Http\Controllers\WelcomeController;
+
+Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
 Route::get('/noticias', function () {
     return view('noticias');
@@ -49,6 +49,8 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
         Route::get('/manage-users', [AdminController::class, 'viewUsers'])->name('manageUsers');
         Route::delete('/user/{id}', [AdminController::class, 'deleteUser'])->name('deleteUser');
         Route::post('/user/{id}/role/{role}', [AdminController::class, 'changeRole'])->name('changeRole');
+        Route::get('/edit-welcome', [AdminController::class, 'editWelcome'])->name('edit-welcome');
+        Route::put('/update-welcome', [AdminController::class, 'updateWelcome'])->name('update-welcome');
     });
 
     

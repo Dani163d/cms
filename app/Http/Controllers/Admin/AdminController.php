@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller; 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\WelcomeSection;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use App\Mail\NewPublisherCredentials;
@@ -21,6 +22,36 @@ class AdminController extends Controller
         return view('admin.dashboard');
     }
 
+    public function editWelcome()
+    {
+        $sections = WelcomeSection::all()->keyBy('section_name');
+        return view('admin.edit-welcome', compact('sections'));
+    }
+
+    public function updateWelcome(Request $request)
+    {
+        $validatedData = $request->validate([
+            'intro_title' => 'required|string|max:255',
+            'intro_content' => 'required|string',
+            'about_title' => 'required|string|max:255',
+            'about_content' => 'required|string',
+            'mission_content' => 'required|string',
+            'vision_content' => 'required|string',
+        ]);
+
+        // Update or create each section
+        foreach ($validatedData as $key => $value) {
+            $sectionName = explode('_', $key)[0];
+            $field = explode('_', $key)[1];
+            
+            WelcomeSection::updateOrCreate(
+                ['section_name' => $sectionName],
+                [$field => $value]
+            );
+        }
+
+        return redirect()->back()->with('success', 'Contenido actualizado exitosamente');
+    }
     // Método para crear un nuevo usuario
     public function createUser(Request $request)
 {

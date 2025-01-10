@@ -2,14 +2,18 @@
 
 @section('content')
 <section id="intro" class="grid md:grid-cols-2 gap-6 items-center px-4 md:px-6 py-6 h-screen bg-gradient-to-br from-white to-[#f0fff7]">
-    <div class="text-center md:text-left animate-fadeIn">
+<div class="text-center md:text-left animate-fadeIn">
         <h1 class="text-3xl md:text-4xl font-extrabold text-[#02311a] mb-4 leading-tight">
-            Tu Guía <span class="text-[#0cad56] relative">
+            {{ $sections['intro']->title ?? 'Tu Guía' }} <span class="text-[#0cad56] relative">
                 para Decisiones
                 <svg class="absolute w-full h-2 -bottom-1 left-0 text-[#0cad56]/20" viewBox="0 0 100 10">
                     <path d="M0 5 Q 25 0, 50 5 T 100 5" fill="none" stroke="currentColor" stroke-width="3"/>
                 </svg>
             </span> Universitarias
+        </h1>
+        <p class="text-gray-700 mb-6 text-base leading-relaxed">
+            {{ $sections['intro']->content ?? 'Ayudamos a estudiantes a encontrar su verdadera vocación mediante análisis personalizados, pruebas de interés y orientación profesional.' }}
+        </p>
         </h1>
         <p class="text-gray-700 mb-6 text-base leading-relaxed">
             Ayudamos a estudiantes a encontrar su verdadera vocación mediante análisis personalizados, 
@@ -27,15 +31,15 @@
 </section>
 
 <section id="nosotros" class="relative px-4 py-8 bg-gradient-to-br from-[#02311a] to-[#024c2d] h-screen" data-show-on-scroll>
-    <div class="absolute inset-0 bg-[#02311a]/10 backdrop-blur-sm"></div>
+<div class="absolute inset-0 bg-[#02311a]/10 backdrop-blur-sm"></div>
     <div class="container mx-auto max-w-4xl relative">
         <div class="text-center mb-8">
             <h2 class="text-3xl font-extrabold text-white mb-3 leading-tight">
-                Sobre Nosotros
+                {{ $sections['about']->title ?? 'Sobre Nosotros' }}
                 <div class="h-0.5 w-16 bg-[#0cad56] mx-auto mt-2"></div>
             </h2>
             <p class="text-white/90 text-base mb-6 max-w-xl mx-auto">
-                Somos un equipo comprometido con ayudar a jóvenes a descubrir su verdadera vocación y potencial profesional.
+                {{ $sections['about']->content ?? 'Somos un equipo comprometido con ayudar a jóvenes a descubrir su verdadera vocación y potencial profesional.' }}
             </p>
         </div>
 
@@ -48,8 +52,7 @@
                 </div>
                 <h3 class="text-xl font-semibold text-white mb-3 text-center">Nuestra Misión</h3>
                 <p class="text-white/90 leading-relaxed text-sm">
-                    Guiamos a estudiantes en su journey académico, proporcionando herramientas de autoconocimiento 
-                    y orientación personalizada.
+                    {{ $sections['mission']->content ?? 'Guiamos a estudiantes en su journey académico, proporcionando herramientas de autoconocimiento y orientación personalizada.' }}
                 </p>
             </div>
 
@@ -61,8 +64,7 @@
                 </div>
                 <h3 class="text-xl font-semibold text-white mb-3 text-center">Nuestra Visión</h3>
                 <p class="text-white/90 leading-relaxed text-sm">
-                    Ser líderes en orientación educativa, expandiendo nuestro alcance para empoderar a más estudiantes 
-                    en sus decisiones académicas.
+                    {{ $sections['vision']->content ?? 'Ser líderes en orientación educativa, expandiendo nuestro alcance para empoderar a más estudiantes en sus decisiones académicas.' }}
                 </p>
             </div>
         </div>
