@@ -13,4 +13,3 @@ class WelcomeSection extends Model
         'additional_data' => 'array'
     ];
 }
-

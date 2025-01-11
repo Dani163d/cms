@@ -2,19 +2,20 @@
 
 @section('content')
 <section id="intro" class="grid md:grid-cols-2 gap-6 items-center px-4 md:px-6 py-6 h-screen bg-gradient-to-br from-white to-[#f0fff7]">
-<div class="text-center md:text-left animate-fadeIn">
+    <div class="text-center md:text-left animate-fadeIn">
         <h1 class="text-3xl md:text-4xl font-extrabold text-[#02311a] mb-4 leading-tight">
-            {{ $sections['intro']->title ?? 'Tu Guía' }} <span class="text-[#0cad56] relative">
-                para Decisiones
+            {{ $sections['intro']->title ?? 'Tu Guía' }} 
+            <span class="text-[#0cad56] relative">
+                {{ json_decode($sections['intro']->additional_data ?? '{}')->span_1 ?? 'para Decisiones' }}
                 <svg class="absolute w-full h-2 -bottom-1 left-0 text-[#0cad56]/20" viewBox="0 0 100 10">
                     <path d="M0 5 Q 25 0, 50 5 T 100 5" fill="none" stroke="currentColor" stroke-width="3"/>
                 </svg>
-            </span> Universitarias
+            </span> 
+            {{ json_decode($sections['intro']->additional_data ?? '{}')->span_2 ?? 'Universitarias' }}
         </h1>
         <p class="text-gray-700 mb-6 text-base leading-relaxed">
             {{ $sections['intro']->content ?? 'Ayudamos a estudiantes a encontrar su verdadera vocación mediante análisis personalizados, pruebas de interés y orientación profesional.' }}
-        </p>
-        </h1>
+</p>
         <div class="space-x-4">
             <a href="#contacto" class="inline-block bg-[#02311a] text-white px-5 py-3 rounded-lg hover:bg-[#0cad56] transition-all duration-300 transform hover:scale-105 shadow-lg text-sm">
                 Contáctanos

@@ -29,31 +29,49 @@
             <!-- Contenedor de pasos -->
             <div class="relative">
                 <!-- Paso 1: Introducción -->
-                <div class="step-content" data-step="1">
-                    <div class="bg-white rounded-xl shadow-sm p-6 mb-4">
-                        <div class="flex items-center gap-3 mb-6">
-                            <span class="w-8 h-8 flex items-center justify-center rounded-full bg-[#0cad56] text-white font-semibold">1</span>
-                            <h2 class="text-xl font-semibold text-[#02311a]">Introducción</h2>
-                        </div>
+                <!-- Paso 1: Introducción -->
+<div class="step-content" data-step="1">
+    <div class="bg-white rounded-xl shadow-sm p-6 mb-4">
+        <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 flex items-center justify-center rounded-full bg-[#0cad56] text-white font-semibold">1</span>
+            <h2 class="text-xl font-semibold text-[#02311a]">Introducción</h2>
+        </div>
 
-                        <div class="space-y-6">
-                            <div class="transform transition-all duration-300 hover:scale-[1.02]">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Título Principal</label>
-                                <input type="text" name="intro_title" 
-                                    value="{{ old('intro_title', $sections['intro']->title ?? '') }}"
-                                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[#0cad56] focus:ring-0 transition-colors"
-                                    placeholder="Escribe un título atractivo...">
-                            </div>
+        <div class="space-y-6">
+            <div class="transform transition-all duration-300 hover:scale-[1.02]">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Título Principal</label>
+                <input type="text" name="intro_title" 
+                    value="{{ old('intro_title', $sections['intro']->title ?? '') }}"
+                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[#0cad56] focus:ring-0 transition-colors"
+                    placeholder="Escribe un título atractivo...">
+            </div>
 
-                            <div class="transform transition-all duration-300 hover:scale-[1.02]">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Mensaje de Bienvenida</label>
-                                <textarea name="intro_content" 
-                                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[#0cad56] focus:ring-0 transition-colors resize-none h-32"
-                                    placeholder="Da la bienvenida a tus visitantes...">{{ old('intro_content', $sections['intro']->content ?? '') }}</textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Nuevos campos aquí -->
+            <div class="transform transition-all duration-300 hover:scale-[1.02]">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Texto Destacado 1</label>
+                <input type="text" name="intro_span_1" 
+                    value="{{ json_decode($sections['intro']->additional_data ?? '{}')->span_1 ?? 'para Decisiones' }}"
+                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[#0cad56] focus:ring-0 transition-colors"
+                    placeholder="Ej: para Decisiones">
+            </div>
+
+            <div class="transform transition-all duration-300 hover:scale-[1.02]">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Texto Destacado 2</label>
+                <input type="text" name="intro_span_2" 
+                    value="{{ json_decode($sections['intro']->additional_data ?? '{}')->span_2 ?? 'Universitarias' }}"
+                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[#0cad56] focus:ring-0 transition-colors"
+                    placeholder="Ej: Universitarias">
+            </div>
+
+            <div class="transform transition-all duration-300 hover:scale-[1.02]">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Mensaje de Bienvenida</label>
+                <textarea name="intro_content" 
+                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[#0cad56] focus:ring-0 transition-colors resize-none h-32"
+                    placeholder="Da la bienvenida a tus visitantes...">{{ old('intro_content', $sections['intro']->content ?? '') }}</textarea>
+            </div>
+        </div>
+    </div>
+</div>
 
                 <!-- Paso 2: Sobre Nosotros -->
                 <div class="step-content hidden" data-step="2">

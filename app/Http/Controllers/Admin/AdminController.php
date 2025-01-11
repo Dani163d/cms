@@ -28,28 +28,55 @@ class AdminController extends Controller
         return view('admin.edit-welcome', compact('sections'));
     }
 
+    // Controlador
     public function updateWelcome(Request $request)
     {
         $validatedData = $request->validate([
             'intro_title' => 'required|string|max:255',
             'intro_content' => 'required|string',
+            'intro_span_1' => 'required|string|max:255',
+            'intro_span_2' => 'required|string|max:255',
             'about_title' => 'required|string|max:255',
             'about_content' => 'required|string',
             'mission_content' => 'required|string',
             'vision_content' => 'required|string',
         ]);
-
-        // Update or create each section
-        foreach ($validatedData as $key => $value) {
-            $sectionName = explode('_', $key)[0];
-            $field = explode('_', $key)[1];
-            
-            WelcomeSection::updateOrCreate(
-                ['section_name' => $sectionName],
-                [$field => $value]
-            );
-        }
-
+    
+        // Primero, manejar los campos span para la sección intro
+        $introSection = WelcomeSection::firstOrCreate(['section_name' => 'intro']);
+        
+        // Preparar los datos adicionales
+        $additionalData = [
+            'span_1' => $validatedData['intro_span_1'],
+            'span_2' => $validatedData['intro_span_2']
+        ];
+        
+        // Actualizar la sección intro con los datos adicionales
+        $introSection->update([
+            'title' => $validatedData['intro_title'],
+            'content' => $validatedData['intro_content'],
+            'additional_data' => json_encode($additionalData)
+        ]);
+    
+        // Actualizar las demás secciones
+        WelcomeSection::updateOrCreate(
+            ['section_name' => 'about'],
+            [
+                'title' => $validatedData['about_title'],
+                'content' => $validatedData['about_content']
+            ]
+        );
+    
+        WelcomeSection::updateOrCreate(
+            ['section_name' => 'mission'],
+            ['content' => $validatedData['mission_content']]
+        );
+    
+        WelcomeSection::updateOrCreate(
+            ['section_name' => 'vision'],
+            ['content' => $validatedData['vision_content']]
+        );
+    
         return redirect()->back()->with('success', 'Contenido actualizado exitosamente');
     }
     // Método para crear un nuevo usuario
