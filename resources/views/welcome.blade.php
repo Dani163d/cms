@@ -15,10 +15,6 @@
             {{ $sections['intro']->content ?? 'Ayudamos a estudiantes a encontrar su verdadera vocación mediante análisis personalizados, pruebas de interés y orientación profesional.' }}
         </p>
         </h1>
-        <p class="text-gray-700 mb-6 text-base leading-relaxed">
-            Ayudamos a estudiantes a encontrar su verdadera vocación mediante análisis personalizados, 
-            pruebas de interés y orientación profesional.
-        </p>
         <div class="space-x-4">
             <a href="#contacto" class="inline-block bg-[#02311a] text-white px-5 py-3 rounded-lg hover:bg-[#0cad56] transition-all duration-300 transform hover:scale-105 shadow-lg text-sm">
                 Contáctanos
