@@ -1,4 +1,5 @@
 <?php
+// database/seeders/RolesAndPermissionsSeeder.php
 
 namespace Database\Seeders;
 
@@ -10,12 +11,12 @@ class RolesAndPermissionsSeeder extends Seeder
 {
     public function run()
     {
-        // Crear permisos (usando firstOrCreate)
+        // Crear permisos para la gestión de carreras
         $permissions = [
-            'create articles',
-            'edit articles',
-            'delete articles',
-            'view articles',
+            'create careers',
+            'edit careers',
+            'delete careers',
+            'view careers',
             'manage users'
         ];
 
@@ -23,30 +24,22 @@ class RolesAndPermissionsSeeder extends Seeder
             Permission::firstOrCreate(['name' => $permission]);
         }
 
-        // Crear roles (usando firstOrCreate)
+        // Crear roles
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
-        $publisherRole = Role::firstOrCreate(['name' => 'publisher']);
-        $visitorRole = Role::firstOrCreate(['name' => 'visitor']);
+        $userRole = Role::firstOrCreate(['name' => 'user']);
 
-        // Asignar permisos al rol 'admin'
+        // Asignar todos los permisos al rol 'admin'
         $adminRole->syncPermissions([
-            'create articles', 
-            'edit articles', 
-            'delete articles', 
-            'view articles', 
+            'create careers', 
+            'edit careers', 
+            'delete careers', 
+            'view careers', 
             'manage users',
         ]);
 
-        // Asignar permisos al rol 'publisher'
-        $publisherRole->syncPermissions([
-            'create articles', 
-            'edit articles', 
-            'view articles',
-        ]);
-
-        // Asignar permisos al rol 'visitor'
-        $visitorRole->syncPermissions([
-            'view articles',
+        // Asignar solo el permiso de ver carreras al rol 'user'
+        $userRole->syncPermissions([
+            'view careers',
         ]);
     }
 }

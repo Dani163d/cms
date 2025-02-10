@@ -89,8 +89,7 @@
                                     <a href="{{ route('admin.manageUsers') }}" class="block px-4 py-2 hover:bg-gray-100">
                                         Gestionar Usuarios
                                     </a>
-                                    <a href="{{ route('publisher.dashboard') }}" class="block px-4 py-2 hover:bg-gray-100">
-                                        Gestionar Noticias
+                                    
                                     </a>
                                     <a href="{{ route('admin.edit-welcome') }}" class="block px-4 py-2 hover:bg-gray-100">
                                         Gestionar HomePage
@@ -135,7 +134,7 @@
                     @if(auth()->user()->hasRole('admin'))
                         <a href="{{ route('admin.dashboard') }}" class="block py-2 hover:text-[#0cad56]">Registrar Publicador</a>
                         <a href="{{ route('admin.manageUsers') }}" class="block py-2 hover:text-[#0cad56]">Gestionar Usuarios</a>
-                        <a href="{{ route('publisher.dashboard') }}" class="block py-2 hover:text-[#0cad56]">Gestionar Noticias</a>
+                      
                     @endif
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf

@@ -1,92 +1,69 @@
 <?php
 use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\WelcomeController;
-
-Route::get('/', [WelcomeController::class, 'index'])->name('home');
-
-Route::get('/noticias', function () {
-    return view('noticias');
-})->name('noticias.index');
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-require __DIR__.'/auth.php';
-
+use App\Http\Controllers\CareerController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use Illuminate\Support\Facades\Route;
 
-// Authentication Routes
-Route::get('/login', [AuthenticatedSessionController::class, 'create'])
-    ->name('login');
+// Ruta principal
+Route::get('/', function () {
+    return view('welcome');
+})->name('home');
 
+// Rutas públicas de carreras
+Route::get('/careers', [CareerController::class, 'index'])->name('careers.index');
+Route::get('/careers/{career}', [CareerController::class, 'show'])->name('careers.show');
+
+// Rutas de autenticación
+Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
-
-Route::get('/register', [RegisteredUserController::class, 'create'])
-    ->name('register');
-
+Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 Route::post('/register', [RegisteredUserController::class, 'store']);
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-    ->name('logout');
-    
+// Rutas protegidas por autenticación
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
 
-    use App\Http\Controllers\Admin\AdminController;
-    Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])
+    // Rutas de perfil
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    });
+});
+
+// Rutas de administrador
+Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
+        // Dashboard y gestión de usuarios
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::get('/manage-users', [AdminController::class, 'viewUsers'])->name('manageUsers');
         Route::delete('/user/{id}', [AdminController::class, 'deleteUser'])->name('deleteUser');
-        Route::post('/user/{id}/role/{role}', [AdminController::class, 'changeRole'])->name('changeRole');
+
+        // Gestión de contenido de bienvenida
         Route::get('/edit-welcome', [AdminController::class, 'editWelcome'])->name('edit-welcome');
         Route::put('/update-welcome', [AdminController::class, 'updateWelcome'])->name('update-welcome');
+
+        // Gestión de carreras
+        Route::get('/carreras/crear', [AdminController::class, 'createCareerForm'])->name('carreras.create');
+        Route::post('/carreras', [AdminController::class, 'createCareer'])->name('carreras.store');
+        Route::get('/carreras/{career}/edit', [AdminController::class, 'editCareer'])->name('carreras.edit');
+        Route::put('/carreras/{career}', [AdminController::class, 'updateCareer'])->name('carreras.update');
+        Route::delete('/carreras/{career}', [AdminController::class, 'deleteCareer'])->name('carreras.destroy');
     });
 
-    
-    
-Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-Route::post('/admin/create-user', [AdminController::class, 'createUser'])->name('admin.createUser');
+// Ruta de contacto
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 
-    
+Route::resource('careers', CareerController::class);
 
-use App\Http\Controllers\Publisher\PublisherController;
-use App\Http\Controllers\ContactController;
-
-Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsPublisher::class])
-    ->prefix('publisher')
-    ->name('publisher.')
-    ->group(function () {
-        Route::get('/dashboard', [PublisherController::class, 'dashboard'])->name('dashboard');
-        Route::post('/dashboard', [PublisherController::class, 'storeNews'])->name('storeNews');
-        Route::get('edit/{id}', [PublisherController::class, 'editNews'])->name('editNews');
-        Route::post('update/{id}', [PublisherController::class, 'updateNews'])->name('updateNews');
-        Route::delete('delete/{id}', [PublisherController::class, 'deleteNews'])->name('deleteNews');
-    });
-
-
-
-// Ruta para mostrar las noticias
-Route::get('/noticias', [PublisherController::class, 'showNews'])->name('noticias');
-
-Route::post('/upload-image', [PublisherController::class, 'uploadImage'])
-    ->name('upload.image')
-    ->middleware(['auth', 'web']);
-
-    Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
-
-
-    Route::post('/upload-image', [PublisherController::class, 'uploadImage'])
-    ->name('publisher.upload.image')
-    ->middleware('auth');
+require __DIR__.'/auth.php';

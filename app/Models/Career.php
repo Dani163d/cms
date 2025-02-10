@@ -1,24 +1,24 @@
 <?php
+// app/Models/Career.php
 
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class News extends Model
+class Career extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'title',
-        'content',
+        'name',
+        'description',
+        'duration',
         'user_id',
     ];
 
-    // Relación con el usuario (publicador)
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 }
-

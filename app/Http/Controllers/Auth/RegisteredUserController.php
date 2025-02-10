@@ -1,4 +1,5 @@
 <?php
+// app/Http/Controllers/Auth/RegisteredUserController.php
 
 namespace App\Http\Controllers\Auth;
 
@@ -15,19 +16,11 @@ use Spatie\Permission\Models\Role;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
     public function create(): View
     {
         return view('auth.register');
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
@@ -42,8 +35,8 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        $visitorRole = Role::findByName('visitor'); // Obtener el rol 'visitor'
-        $user->assignRole($visitorRole); // Asignar el rol 'visitor' al usuario
+        $userRole = Role::findByName('user'); // Obtener el rol 'user'
+        $user->assignRole($userRole); // Asignar el rol 'user' al usuario
 
         event(new Registered($user));
 
