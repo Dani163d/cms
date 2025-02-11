@@ -24,7 +24,7 @@ class AuthenticatedSessionController extends Controller
     
         // Verificar el rol del usuario y redirigir según corresponda
         if ($request->user() && $request->user()->hasRole('admin')) {
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('admin.editWelcome');
         }
     
         // Si no es admin, redirigir a la página de carreras

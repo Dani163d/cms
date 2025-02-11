@@ -23,7 +23,7 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
 
 // Rutas públicas de carreras
 Route::get('/careers', [CareerController::class, 'index'])->name('careers.index');
-Route::get('/careers/{career}', [CareerController::class, 'show'])->name('careers.show');
+Route::get('/careers/{career}/branches', [CareerController::class, 'branches'])->name('careers.branches');
 
 // Rutas de administrador
 Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])
@@ -31,14 +31,11 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])
     ->name('admin.')
     ->group(function () {
         // Dashboard y gestión de usuarios
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::get('/manage-users', [AdminController::class, 'viewUsers'])->name('manageUsers');
-        Route::delete('/user/{id}', [AdminController::class, 'deleteUser'])->name('deleteUser');
-
-        // Gestión de carreras
-        Route::post('/carreras', [AdminController::class, 'createCareer'])->name('carreras.store');
-        Route::get('/carreras/{career}/edit', [AdminController::class, 'editCareer'])->name('carreras.edit');
-        Route::put('/carreras/{career}', [AdminController::class, 'updateCareer'])->name('carreras.update');
-        Route::delete('/carreras/{career}', [AdminController::class, 'deleteCareer'])->name('carreras.destroy');
+        Route::get('/edit-welcome', [AdminController::class, 'editWelcome'])->name('editWelcome');
+        Route::post('/edit-welcome/career', [AdminController::class, 'createCareer'])->name('createCareer');
+        Route::put('/edit-welcome/career/{career}', [AdminController::class, 'updateWelcome'])->name('updateWelcome');
+        Route::delete('/edit-welcome/career/{career}', [AdminController::class, 'deleteCareer'])->name('deleteCareer');
+        Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])->name('deleteUser');
     });
 require __DIR__.'/auth.php';

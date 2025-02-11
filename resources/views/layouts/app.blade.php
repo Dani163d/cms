@@ -82,10 +82,7 @@
                                     </svg>
                                 </button>
                                 <div class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 text-gray-700">
-                                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 hover:bg-gray-100">
-                                        Registrar Carreras
-                                    </a>
-                                    <a href="{{ route('admin.edit-welcome') }}" class="block px-4 py-2 hover:bg-gray-100">
+                                    <a href="{{ route('admin.editWelcome') }}" class="block px-4 py-2 hover:bg-gray-100">
                                         Gestionar Carreras
                                     </a>
                                     <a href="{{ route('admin.manageUsers') }}" class="block px-4 py-2 hover:bg-gray-100">
@@ -129,7 +126,7 @@
                     <a href="{{ route('login') }}" class="block py-2 hover:text-[#0cad56]">Iniciar Sesión</a>
                 @else
                     @if(auth()->user()->hasRole('admin'))
-                        <a href="{{ route('admin.dashboard') }}" class="block py-2 hover:text-[#0cad56]">Registrar Publicador</a>
+
                         <a href="{{ route('admin.manageUsers') }}" class="block py-2 hover:text-[#0cad56]">Gestionar Usuarios</a>
                       
                     @endif

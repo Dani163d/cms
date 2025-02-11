@@ -1,19 +1,31 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-gray-50">
+<div class="min-h-screen bg-gradient-to-br from-[#f8f9fa] to-[#e9ecef] py-6">
     <!-- Barra de progreso superior -->
     <div class="fixed top-0 left-0 w-full h-1 bg-gray-200">
-        <div class="progress-bar h-full bg-gradient-to-r from-[#0cad56] to-[#02311a] transition-all duration-300"></div>
+        <div class="h-full bg-gradient-to-r from-[#0cad56] to-[#02311a] w-full"></div>
     </div>
 
-    <div class="max-w-4xl mx-auto px-4 py-8">
-        <!-- Header con pasos -->
-        <div class="flex items-center justify-between mb-8">
-            <h1 class="text-2xl font-bold text-[#02311a]">Editor de Página Principal</h1>
-            <div class="text-sm text-gray-500">
-                Paso <span id="currentStep">1</span> de 3
+    <div class="max-w-7xl mx-auto px-4">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
+            <div class="mb-4 md:mb-0">
+                <h1 class="text-3xl font-bold text-[#02311a] relative inline-block">
+                    Gestión de Carreras
+                    <div class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-[#0cad56] to-[#02311a]"></div>
+                </h1>
+                <p class="text-gray-600 mt-2">Administra las carreras disponibles en el sistema</p>
             </div>
+            <button 
+                onclick="openModal('createCareerModal')"
+                class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#0cad56] to-[#02311a] text-white rounded-xl hover:opacity-90 transition-all duration-300 transform hover:scale-105"
+            >
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+                Nueva Carrera
+            </button>
         </div>
 
         @if(session('success'))
@@ -22,301 +34,328 @@
             </div>
         @endif
 
-        <form id="welcomeForm" action="{{ route('admin.update-welcome') }}" method="POST">
-            @csrf
-            @method('PUT')
+        <!-- Grid de Carreras -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @forelse($careers as $career)
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+                    <div class="border-b-2 border-gray-100">
+                        <div class="bg-gradient-to-r from-[#02311a] to-[#0cad56] p-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="bg-white/10 p-2 rounded-lg">
+                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-lg font-semibold text-white">{{ $career->name }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-            <!-- Contenedor de pasos -->
-            <div class="relative">
-                <!-- Paso 1: Introducción -->
-                <!-- Paso 1: Introducción -->
-<div class="step-content" data-step="1">
-    <div class="bg-white rounded-xl shadow-sm p-6 mb-4">
-        <div class="flex items-center gap-3 mb-6">
-            <span class="w-8 h-8 flex items-center justify-center rounded-full bg-[#0cad56] text-white font-semibold">1</span>
-            <h2 class="text-xl font-semibold text-[#02311a]">Introducción</h2>
-        </div>
+                    <div class="p-6">
+                        <!-- Contenido de la card -->
+                        <div class="space-y-4">
+                            <p class="text-gray-600 text-sm">{{ $career->description }}</p>
+                            
+                            <div class="flex items-center gap-4 text-sm">
+                                <div class="flex items-center text-[#0cad56]">
+                                    <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    {{ $career->duration }} años
+                                </div>
+                                <div class="flex items-center text-gray-500">
+                                    <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                    </svg>
+                                    {{ $career->user->name }}
+                                </div>
+                            </div>
 
-        <div class="space-y-6">
-            <div class="transform transition-all duration-300 hover:scale-[1.02]">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Título Principal</label>
-                <input type="text" name="intro_title" 
-                    value="{{ old('intro_title', $sections['intro']->title ?? '') }}"
-                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[#0cad56] focus:ring-0 transition-colors"
-                    placeholder="Escribe un título atractivo...">
-            </div>
-
-            <!-- Nuevos campos aquí -->
-            <div class="transform transition-all duration-300 hover:scale-[1.02]">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Texto Destacado 1</label>
-                <input type="text" name="intro_span_1" 
-                    value="{{ json_decode($sections['intro']->additional_data ?? '{}')->span_1 ?? 'para Decisiones' }}"
-                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[#0cad56] focus:ring-0 transition-colors"
-                    placeholder="Ej: para Decisiones">
-            </div>
-
-            <div class="transform transition-all duration-300 hover:scale-[1.02]">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Texto Destacado 2</label>
-                <input type="text" name="intro_span_2" 
-                    value="{{ json_decode($sections['intro']->additional_data ?? '{}')->span_2 ?? 'Universitarias' }}"
-                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[#0cad56] focus:ring-0 transition-colors"
-                    placeholder="Ej: Universitarias">
-            </div>
-
-            <div class="transform transition-all duration-300 hover:scale-[1.02]">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Mensaje de Bienvenida</label>
-                <textarea name="intro_content" 
-                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[#0cad56] focus:ring-0 transition-colors resize-none h-32"
-                    placeholder="Da la bienvenida a tus visitantes...">{{ old('intro_content', $sections['intro']->content ?? '') }}</textarea>
-            </div>
+                            <!-- Botones de acción -->
+                            <div class="flex items-center justify-end gap-2 pt-4 border-t border-gray-100">
+                                <button 
+                                    onclick="openEditModal({{ $career->id }})"
+                                    class="inline-flex items-center px-3 py-2 text-sm text-[#0cad56] hover:bg-[#0cad56]/10 rounded-lg transition-colors duration-300">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                    Editar
+                                </button>
+                                <form action="{{ route('admin.deleteCareer', $career->id) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button 
+                                        type="button"
+                                        onclick="confirmDelete(this.parentElement)"
+                                        class="inline-flex items-center px-3 py-2 text-sm text-red-500 hover:bg-red-50 rounded-lg transition-colors duration-300">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                        </svg>
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-span-full">
+                    <div class="text-center py-12 bg-white rounded-2xl shadow-sm">
+                        <div class="bg-gradient-to-r from-[#0cad56] to-[#02311a] w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-[#02311a] mb-2">No hay carreras registradas</h3>
+                        <p class="text-gray-500 mb-4">Comience agregando una nueva carrera al sistema</p>
+                        <button 
+                            onclick="openModal('createCareerModal')"
+                            class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#0cad56] to-[#02311a] text-white rounded-xl hover:opacity-90 transition-all duration-300">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                            Agregar Carrera
+                        </button>
+                    </div>
+                </div>
+            @endforelse
         </div>
     </div>
 </div>
 
-                <!-- Paso 2: Sobre Nosotros -->
-                <div class="step-content hidden" data-step="2">
-                    <div class="bg-white rounded-xl shadow-sm p-6 mb-4">
-                        <div class="flex items-center gap-3 mb-6">
-                            <span class="w-8 h-8 flex items-center justify-center rounded-full bg-[#0cad56] text-white font-semibold">2</span>
-                            <h2 class="text-xl font-semibold text-[#02311a]">Sobre Nosotros</h2>
-                        </div>
-
-                        <div class="space-y-6">
-                            <div class="transform transition-all duration-300 hover:scale-[1.02]">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Título de la Sección</label>
-                                <input type="text" name="about_title"
-                                    value="{{ old('about_title', $sections['about']->title ?? '') }}"
-                                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[#0cad56] focus:ring-0 transition-colors"
-                                    placeholder="Ej: Nuestra Historia">
-                            </div>
-
-                            <div class="transform transition-all duration-300 hover:scale-[1.02]">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
-                                <textarea name="about_content"
-                                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[#0cad56] focus:ring-0 transition-colors resize-none h-32"
-                                    placeholder="Cuenta tu historia...">{{ old('about_content', $sections['about']->content ?? '') }}</textarea>
-                            </div>
-                        </div>
+<!-- Modal para crear carrera -->
+<div id="createCareerModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl m-4 overflow-hidden transform transition-all">
+        <!-- Header del modal con gradiente -->
+        <div class="bg-gradient-to-r from-[#02311a] to-[#0cad56] p-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white/10 p-2 rounded-lg">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white">Nueva Carrera</h2>
+                        <p class="text-white/80 text-sm">Complete el formulario para registrar una nueva carrera</p>
                     </div>
                 </div>
+                <button onclick="closeModal('createCareerModal')" class="text-white/80 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
 
-                <!-- Paso 3: Misión y Visión -->
-                <div class="step-content hidden" data-step="3">
-                    <div class="bg-white rounded-xl shadow-sm p-6 mb-4">
-                        <div class="flex items-center gap-3 mb-6">
-                            <span class="w-8 h-8 flex items-center justify-center rounded-full bg-[#0cad56] text-white font-semibold">3</span>
-                            <h2 class="text-xl font-semibold text-[#02311a]">Misión y Visión</h2>
-                        </div>
-
-                        <div class="space-y-6">
-                            <div class="transform transition-all duration-300 hover:scale-[1.02]">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Nuestra Misión</label>
-                                <textarea name="mission_content"
-                                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[#0cad56] focus:ring-0 transition-colors resize-none h-32"
-                                    placeholder="Define el propósito de tu empresa...">{{ old('mission_content', $sections['mission']->content ?? '') }}</textarea>
-                            </div>
-
-                            <div class="transform transition-all duration-300 hover:scale-[1.02]">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Nuestra Visión</label>
-                                <textarea name="vision_content"
-                                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[#0cad56] focus:ring-0 transition-colors resize-none h-32"
-                                    placeholder="Describe hacia dónde se dirige tu empresa...">{{ old('vision_content', $sections['vision']->content ?? '') }}</textarea>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Formulario -->
+        <form action="{{ route('admin.createCareer') }}" method="POST" class="p-6 space-y-5">
+            @csrf
+            
+            <!-- Nombre de la Carrera -->
+            <div class="space-y-1">
+                <label class="text-sm font-medium text-gray-700 block">Nombre de la Carrera</label>
+                <div class="relative group">
+                    <input type="text" name="name" required
+                        class="w-full px-4 py-2 rounded-xl border-2 border-gray-200 focus:border-[#0cad56] focus:ring-0 transition-colors pl-10"
+                        placeholder="Ej: Ingeniería en Sistemas">
+                    <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
                 </div>
             </div>
 
-            <!-- Controles de navegación -->
-            <div class="flex justify-between mt-6">
-                <button type="button" 
-                        id="prevStep"
-                        class="px-6 py-2 rounded-lg border-2 border-[#02311a] text-[#02311a] hover:bg-[#02311a] hover:text-white transition-colors duration-300 hidden">
-                    ← Anterior
+            <!-- Duración -->
+            <div class="space-y-1">
+                <label class="text-sm font-medium text-gray-700 block">Duración (años)</label>
+                <div class="relative group">
+                    <input type="number" name="duration" required min="1"
+                        class="w-full px-4 py-2 rounded-xl border-2 border-gray-200 focus:border-[#0cad56] focus:ring-0 transition-colors pl-10"
+                        placeholder="Ej: 5">
+                    <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Descripción -->
+            <div class="space-y-1">
+                <label class="text-sm font-medium text-gray-700 block">Descripción</label>
+                <div class="relative group">
+                    <textarea name="description" required rows="4"
+                        class="w-full px-4 py-2 rounded-xl border-2 border-gray-200 focus:border-[#0cad56] focus:ring-0 transition-colors pl-10"
+                        placeholder="Descripción detallada de la carrera..."></textarea>
+                    <svg class="w-5 h-5 text-gray-400 absolute left-3 top-8 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Botón de envío -->
+            <button type="submit" 
+                class="w-full bg-gradient-to-r from-[#0cad56] to-[#02311a] text-white py-3 rounded-xl hover:opacity-90 transition-all duration-300 relative overflow-hidden group">
+                <span class="absolute w-48 h-48 mt-10 group-hover:-rotate-45 group-hover:-mt-20 transition-all duration-1000 ease-out -left-8 -top-16 bg-white opacity-10"></span>
+                <span class="relative">Registrar Carrera</span>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal para editar carrera -->
+<div id="editCareerModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl m-4 overflow-hidden">
+        <!-- Header del modal con gradiente -->
+        <div class="bg-gradient-to-r from-[#02311a] to-[#0cad56] p-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white/10 p-2 rounded-lg">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white">Editar Carrera</h2>
+                        <p class="text-white/80 text-sm">Modifique los datos de la carrera</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('editCareerModal')" class="text-white/80 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
                 </button>
-                
-                <button type="button" 
-                        id="nextStep"
-                        class="ml-auto px-6 py-2 rounded-lg bg-[#0cad56] text-white hover:bg-[#02311a] transition-colors duration-300">
-                    Siguiente →
+            </div>
+        </div>
+
+        <!-- Formulario de edición -->
+        <form id="editCareerForm" method="POST" class="p-6 space-y-5">
+            @csrf
+            @method('PUT')
+            
+            <!-- Nombre de la Carrera -->
+            <div class="space-y-1">
+                <label class="text-sm font-medium text-gray-700 block">Nombre de la Carrera</label>
+                <div class="relative group">
+                    <input type="text" name="name" id="editName" required
+                        class="w-full px-4 py-2 rounded-xl border-2 border-gray-200 focus:border-[#0cad56] focus:ring-0 transition-colors pl-10">
+                    <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Duración -->
+            <div class="space-y-1">
+                <label class="text-sm font-medium text-gray-700 block">Duración (años)</label>
+                <div class="relative group">
+                    <input type="number" name="duration" id="editDuration" required min="1"
+                        class="w-full px-4 py-2 rounded-xl border-2 border-gray-200 focus:border-[#0cad56] focus:ring-0 transition-colors pl-10">
+                    <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Descripción -->
+            <div class="space-y-1">
+                <label class="text-sm font-medium text-gray-700 block">Descripción</label>
+                <div class="relative group">
+                    <textarea name="description" id="editDescription" required rows="4"
+                        class="w-full px-4 py-2 rounded-xl border-2 border-gray-200 focus:border-[#0cad56] focus:ring-0 transition-colors pl-10"></textarea>
+                    <svg class="w-5 h-5 text-gray-400 absolute left-3 top-8 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="flex justify-end gap-3">
+                <button type="button" onclick="closeModal('editCareerModal')"
+                    class="px-4 py-2 border-2 border-gray-200 rounded-xl hover:bg-gray-50 transition-colors duration-300">
+                    Cancelar
                 </button>
-                
-                <button type="submit" 
-                        id="submitButton"
-                        class="ml-auto px-6 py-2 rounded-lg bg-[#0cad56] text-white hover:bg-[#02311a] transition-colors duration-300 hidden">
+                <button type="submit"
+                    class="px-4 py-2 bg-gradient-to-r from-[#0cad56] to-[#02311a] text-white rounded-xl hover:opacity-90 transition-all duration-300">
                     Guardar Cambios
                 </button>
             </div>
         </form>
-
-        <!-- Ayuda contextual flotante -->
-        <div class="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 max-w-xs transition-transform transform hover:scale-105">
-            <div class="flex items-start gap-3">
-                <div class="p-2 bg-[#0cad56]/10 rounded-lg">
-                    <svg class="w-5 h-5 text-[#0cad56]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="text-sm font-medium text-gray-900" id="contextHelp">Tips para la Introducción</h3>
-                    <p class="text-sm text-gray-500 mt-1" id="contextHelpText">
-                        Escribe un título claro y atractivo que capture la atención de tus visitantes.
-                    </p>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    let currentStep = 1;
-    const totalSteps = 3;
-    const form = document.getElementById('welcomeForm');
-    const prevButton = document.getElementById('prevStep');
-    const nextButton = document.getElementById('nextStep');
-    const submitButton = document.getElementById('submitButton');
-    const progressBar = document.querySelector('.progress-bar');
-    const stepDisplay = document.getElementById('currentStep');
-    const contextHelp = document.getElementById('contextHelp');
-    const contextHelpText = document.getElementById('contextHelpText');
+function openModal(modalId) {
+    document.getElementById(modalId).classList.remove('hidden');
+    document.getElementById(modalId).classList.add('flex');
+}
 
-    // Contenido de ayuda contextual para cada paso
-    const helpContent = {
-        1: {
-            title: 'Tips para la Introducción',
-            text: 'Escribe un título claro y atractivo que capture la atención de tus visitantes.'
-        },
-        2: {
-            title: 'Tips para Sobre Nosotros',
-            text: 'Cuenta tu historia de forma concisa y auténtica. Destaca los valores de tu empresa.'
-        },
-        3: {
-            title: 'Tips para Misión y Visión',
-            text: 'Define claramente el propósito de tu empresa y hacia dónde se dirige en el futuro.'
-        }
-    };
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.add('hidden');
+    document.getElementById(modalId).classList.remove('flex');
+}
 
-    function updateStep(step) {
-        // Actualizar visibilidad de los pasos
-        document.querySelectorAll('.step-content').forEach(content => {
-            content.classList.add('hidden');
+function openEditModal(careerId) {
+    fetch(`/api/careers/${careerId}`)
+        .then(response => response.json())
+        .then(career => {
+            document.getElementById('editName').value = career.name;
+            document.getElementById('editDescription').value = career.description;
+            document.getElementById('editDuration').value = career.duration;
+            document.getElementById('editCareerForm').action = `/admin/edit-welcome/career/${careerId}`;
+            openModal('editCareerModal');
         });
-        document.querySelector(`[data-step="${step}"]`).classList.remove('hidden');
+}
 
-        // Actualizar navegación
-        prevButton.classList.toggle('hidden', step === 1);
-        nextButton.classList.toggle('hidden', step === totalSteps);
-        submitButton.classList.toggle('hidden', step !== totalSteps);
-
-        // Actualizar progreso
-        stepDisplay.textContent = step;
-        progressBar.style.width = `${(step / totalSteps) * 100}%`;
-
-        // Actualizar ayuda contextual
-        contextHelp.textContent = helpContent[step].title;
-        contextHelpText.textContent = helpContent[step].text;
-
-        // Animar entrada
-        const currentContent = document.querySelector(`[data-step="${step}"]`);
-        currentContent.classList.add('animate-fade-in');
+function confirmDelete(form) {
+    if (confirm('¿Estás seguro de que deseas eliminar esta carrera?')) {
+        form.submit();
     }
+}
 
-    // Event listeners para navegación
-    prevButton.addEventListener('click', () => {
-        if (currentStep > 1) {
-            currentStep--;
-            updateStep(currentStep);
-        }
-    });
-
-    nextButton.addEventListener('click', () => {
-        if (currentStep < totalSteps) {
-            currentStep++;
-            updateStep(currentStep);
-        }
-    });
-
-    // Event listener para el formulario
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Obtener el token CSRF
-        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        
-        // Crear FormData del formulario
-        const formData = new FormData(form);
-
-        // Realizar la petición fetch
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': token
-            },
-            credentials: 'same-origin'
-        })
-        .then(response => {
-            if (response.redirected) {
-                alert('Cambios guardados correctamente');
-                window.location.href = response.url;
-                return;
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data) {
-                alert('Cambios guardados correctamente');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            // Removemos la alerta de error ya que los cambios sí se realizan
-            // alert('Ocurrió un error al guardar los cambios');
-        });
-    });
-
-    // Verificar si hay mensaje de éxito en la sesión
-    if (document.querySelector('.alert-success')) {
-        alert('Cambios guardados correctamente');
+// Cerrar modales al hacer clic fuera
+window.onclick = function(event) {
+    if (event.target.classList.contains('fixed')) {
+        event.target.classList.add('hidden');
+        event.target.classList.remove('flex');
     }
+}
 
-    // Inicializar el primer paso
-    updateStep(1);
-});
+// Animación para mensajes de éxito
+@if(session('success'))
+    setTimeout(() => {
+        const alert = document.querySelector('.animate-slide-in');
+        if (alert) {
+            alert.classList.add('opacity-0');
+            setTimeout(() => alert.remove(), 300);
+        }
+    }, 3000);
+@endif
 </script>
 
 <style>
-.animate-fade-in {
-    animation: fadeIn 0.5s ease-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-slide-in {
-    animation: slideIn 0.3s ease-out;
-}
-
 @keyframes slideIn {
     from { transform: translateX(100%); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
 }
 
-/* Transiciones suaves */
-.step-content {
-    transition: all 0.3s ease-out;
+.animate-slide-in {
+    animation: slideIn 0.3s ease-out;
+    transition: opacity 0.3s ease-out;
 }
 
-/* Estilo de hover para campos */
-input:hover, textarea:hover {
-    border-color: #0cad56;
+/* Estilos para inputs y textareas en foco */
+input:focus, textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(12, 173, 86, 0.2);
 }
 
-/* Responsive */
+/* Scroll suave */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Responsive ajustes */
 @media (max-width: 640px) {
     .fixed {
         position: sticky;

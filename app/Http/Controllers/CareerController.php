@@ -23,8 +23,9 @@ class CareerController extends Controller
         return view('careers.index', compact('careers'));
     }
 
-    public function show(Career $career)
+    public function branches(Career $career)
     {
-        return view('careers.show', compact('career'));
+        $branches = $career->branches; // Asumiendo que tienes una relación branches en tu modelo Career
+        return view('careers.branches', compact('career', 'branches'));
     }
 }

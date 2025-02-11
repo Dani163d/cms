@@ -9,11 +9,6 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    public function dashboard()
-    {
-        $careers = Career::latest()->get();
-        return view('admin.dashboard', compact('careers'));
-    }
 
     public function viewUsers()
     {
@@ -31,6 +26,12 @@ class AdminController extends Controller
         return redirect()->back()->with('error', 'No se puede eliminar un administrador');
     }
 
+    public function editWelcome()
+    {
+        $careers = Career::with('user')->latest()->get();
+        return view('admin.edit-welcome', compact('careers'));
+    }
+
     public function createCareer(Request $request)
     {
         $validated = $request->validate([
@@ -40,16 +41,13 @@ class AdminController extends Controller
             'area' => 'required|string'
         ]);
 
+        $validated['user_id'] = auth()->id();
+
         Career::create($validated);
         return redirect()->back()->with('success', 'Carrera creada exitosamente');
     }
 
-    public function editCareer(Career $career)
-    {
-        return view('admin.careers.edit', compact('career'));
-    }
-
-    public function updateCareer(Request $request, Career $career)
+    public function updateWelcome(Request $request, Career $career)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -59,7 +57,7 @@ class AdminController extends Controller
         ]);
 
         $career->update($validated);
-        return redirect()->route('admin.dashboard')->with('success', 'Carrera actualizada exitosamente');
+        return redirect()->back()->with('success', 'Carrera actualizada exitosamente');
     }
 
     public function deleteCareer(Career $career)
