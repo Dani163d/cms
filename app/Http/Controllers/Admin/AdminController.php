@@ -1,80 +1,70 @@
 <?php
-// app/Http/Controllers/Admin/AdminController.php
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller; 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Career;
-use App\Models\WelcomeSection;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
     public function dashboard()
     {
-        return view('admin.dashboard');
+        $careers = Career::latest()->get();
+        return view('admin.dashboard', compact('careers'));
     }
 
-    public function manageUsers()
+    public function viewUsers()
     {
-        return view('admin.manage-users');
+        $users = User::where('id', '!=', auth()->id())->get();
+        return view('admin.manage-users', compact('users'));
     }
 
-    public function createCareerForm()
+    public function deleteUser($id)
     {
-        return view('admin.careers.create');
+        $user = User::findOrFail($id);
+        if (!$user->hasRole('admin')) {
+            $user->delete();
+            return redirect()->back()->with('success', 'Usuario eliminado exitosamente');
+        }
+        return redirect()->back()->with('error', 'No se puede eliminar un administrador');
     }
 
     public function createCareer(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'duration' => 'required|string',
+            'duration' => 'required|integer|min:1',
+            'area' => 'required|string'
         ]);
 
-        Career::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'duration' => $request->duration,
-            'user_id' => auth()->id(),
-        ]);
-
-        return redirect()->route('admin.dashboard')->with('success', 'Carrera creada exitosamente');
+        Career::create($validated);
+        return redirect()->back()->with('success', 'Carrera creada exitosamente');
     }
 
-    public function editCareer($id)
+    public function editCareer(Career $career)
     {
-        $career = Career::findOrFail($id);
-        return view('admin.edit-career', compact('career'));
+        return view('admin.careers.edit', compact('career'));
     }
 
-    public function updateCareer(Request $request, $id)
+    public function updateCareer(Request $request, Career $career)
     {
-        $career = Career::findOrFail($id);
-        
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'duration' => 'required|string',
+            'duration' => 'required|integer|min:1',
+            'area' => 'required|string'
         ]);
 
-        $career->update([
-            'name' => $request->name,
-            'description' => $request->description,
-            'duration' => $request->duration,
-        ]);
-
+        $career->update($validated);
         return redirect()->route('admin.dashboard')->with('success', 'Carrera actualizada exitosamente');
     }
 
-    public function deleteCareer($id)
+    public function deleteCareer(Career $career)
     {
-        $career = Career::findOrFail($id);
         $career->delete();
-        return redirect()->route('admin.dashboard')->with('success', 'Carrera eliminada exitosamente');
+        return redirect()->back()->with('success', 'Carrera eliminada exitosamente');
     }
 }

@@ -1,5 +1,4 @@
 <?php
-// app/Http/Middleware/EnsureUserIsAdmin.php
 
 namespace App\Http\Middleware;
 
@@ -11,7 +10,7 @@ class EnsureUserIsAdmin
     public function handle(Request $request, Closure $next)
     {
         if (!$request->user() || !$request->user()->hasRole('admin')) {
-            abort(403, 'Acceso no autorizado.');
+            return redirect()->route('careers.index');
         }
 
         return $next($request);

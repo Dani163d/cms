@@ -55,7 +55,7 @@
             <div class="flex justify-between items-center">
                 <!-- Logo -->
                 <div class="flex items-center space-x-4">
-                    <a href="{{ route('home') }}" class="flex items-center space-x-2">
+                  
                         <div class="bg-[#0cad56] p-2 rounded-lg">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
@@ -68,8 +68,7 @@
                 <!-- Navigation -->
                 <div class="hidden md:flex items-center space-x-6">
                     @guest
-                        <a href="{{ route('home') }}" class="nav-link">Inicio</a>
-                        <a href="#nosotros" class="nav-link">Sobre Nosotros</a>
+
                         <a href="{{ route('login') }}" class="bg-[#0cad56] hover:bg-[#099548] px-6 py-2 rounded-full transition-colors duration-300">
                             Iniciar Sesión
                         </a>
@@ -84,16 +83,15 @@
                                 </button>
                                 <div class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 text-gray-700">
                                     <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 hover:bg-gray-100">
-                                        Registrar Publicador
+                                        Registrar Carreras
+                                    </a>
+                                    <a href="{{ route('admin.edit-welcome') }}" class="block px-4 py-2 hover:bg-gray-100">
+                                        Gestionar Carreras
                                     </a>
                                     <a href="{{ route('admin.manageUsers') }}" class="block px-4 py-2 hover:bg-gray-100">
                                         Gestionar Usuarios
                                     </a>
-                                    
-                                    </a>
-                                    <a href="{{ route('admin.edit-welcome') }}" class="block px-4 py-2 hover:bg-gray-100">
-                                        Gestionar HomePage
-                                    </a>
+
                                 </div>
                             </div>
                         @endif
@@ -127,8 +125,7 @@
             <!-- Mobile menu -->
             <div id="mobileMenu" class="hidden md:hidden mt-4 space-y-2">
                 @guest
-                    <a href="{{ route('home') }}" class="block py-2 hover:text-[#0cad56]">Inicio</a>
-                    <a href="#nosotros" class="block py-2 hover:text-[#0cad56]">Sobre Nosotros</a>
+            
                     <a href="{{ route('login') }}" class="block py-2 hover:text-[#0cad56]">Iniciar Sesión</a>
                 @else
                     @if(auth()->user()->hasRole('admin'))
@@ -178,28 +175,6 @@
                 <p class="text-gray-300 text-sm">
                     Transformando decisiones estudiantiles en éxito profesional.
                 </p>
-            </div>
-
-            <!-- Enlaces Rápidos -->
-            <div class="w-full max-w-xs">
-                <h4 class="text-base font-semibold mb-3">Enlaces Rápidos</h4>
-                <ul class="space-y-1.5">
-                    <li>
-                        <a href="{{ route('home') }}" class="text-gray-300 hover:text-[#0cad56] transition-colors duration-300 text-sm">
-                            Inicio
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#nosotros" class="text-gray-300 hover:text-[#0cad56] transition-colors duration-300 text-sm">
-                            Sobre Nosotros
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#contacto" class="text-gray-300 hover:text-[#0cad56] transition-colors duration-300 text-sm">
-                            Contáctanos
-                        </a>
-                    </li>
-                </ul>
             </div>
 
             <!-- Contacto -->
