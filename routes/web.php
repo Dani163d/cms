@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
+use App\Models\Career;
 
 // Ruta principal redirige al login
 Route::redirect('/', '/login');
@@ -37,5 +38,11 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])
         Route::put('/edit-welcome/career/{career}', [AdminController::class, 'updateWelcome'])->name('updateWelcome');
         Route::delete('/edit-welcome/career/{career}', [AdminController::class, 'deleteCareer'])->name('deleteCareer');
         Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])->name('deleteUser');
+        // routes/web.php
+
+        Route::get('/admin/careers/{career}', function (Career $career) {
+        return response()->json($career);
+    })->name('admin.getCareer');
     });
+    Route::get('/admin/careers/{career}', [AdminController::class, 'getCareer'])->name('admin.getCareer');
 require __DIR__.'/auth.php';

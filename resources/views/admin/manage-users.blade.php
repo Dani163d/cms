@@ -115,14 +115,107 @@
     </div>
 </div>
 
+<script>
+function confirmDelete(event) {
+    event.preventDefault();
+    const form = event.target;
+    
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: "Esta acción eliminará permanentemente al usuario del sistema",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#0cad56',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        background: '#fff',
+        borderRadius: '1rem',
+        customClass: {
+            confirmButton: 'rounded-lg px-4 py-2',
+            cancelButton: 'rounded-lg px-4 py-2'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            form.submit();
+        }
+    });
+}
+
+// Inicialización de Sweet Alert para mensajes de sesión
+document.addEventListener('DOMContentLoaded', function() {
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Éxito',
+            text: "{{ session('success') }}",
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: '#fff',
+            iconColor: '#0cad56',
+            customClass: {
+                popup: 'rounded-xl shadow-lg'
+            }
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: "{{ session('error') }}",
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: '#fff',
+            customClass: {
+                popup: 'rounded-xl shadow-lg'
+            }
+        });
+    @endif
+});
+</script>
+
 <style>
 @keyframes slideIn {
     from { transform: translateX(100%); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
 }
 
-.animate-slide-in {
-    animation: slideIn 0.3s ease-out;
+/* Estilos personalizados para Sweet Alert */
+.swal2-popup {
+    font-family: inherit;
+}
+
+.swal2-title {
+    color: #1a1a1a;
+}
+
+.swal2-html-container {
+    color: #4b5563;
+}
+
+.swal2-confirm {
+    background: linear-gradient(to right, #0cad56, #02311a) !important;
+    transition: opacity 0.3s !important;
+}
+
+.swal2-confirm:hover {
+    opacity: 0.9 !important;
+}
+
+.swal2-cancel {
+    background: #ef4444 !important;
+    transition: opacity 0.3s !important;
+}
+
+.swal2-cancel:hover {
+    opacity: 0.9 !important;
 }
 
 /* Estilizar la barra de desplazamiento */
@@ -151,25 +244,4 @@
     }
 }
 </style>
-
-<script>
-function confirmDelete(event) {
-    event.preventDefault();
-    if (confirm('¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.')) {
-        event.target.submit();
-    }
-}
-
-// Animación para mensajes de éxito
-@if(session('success'))
-    setTimeout(() => {
-        const alert = document.querySelector('.animate-slide-in');
-        if (alert) {
-            alert.style.opacity = '0';
-            alert.style.transform = 'translateX(100%)';
-            setTimeout(() => alert.remove(), 300);
-        }
-    }, 3000);
-@endif
-</script>
 @endsection

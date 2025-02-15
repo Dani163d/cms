@@ -72,7 +72,7 @@
 
                             <a href="{{ route('careers.branches', $career->id) }}" 
                                class="block w-full text-center py-3 bg-gradient-to-r from-[#0cad56] to-[#02311a] text-white rounded-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300">
-                                Ver Ramas de la Carrera
+                                Ver Menciones de la Carrera
                             </a>
                         </div>
                     </div>

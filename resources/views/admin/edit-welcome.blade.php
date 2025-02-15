@@ -16,6 +16,7 @@
                     <div class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-[#0cad56] to-[#02311a]"></div>
                 </h1>
                 <p class="text-gray-600 mt-2">Administra las carreras disponibles en el sistema</p>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             </div>
             <button 
                 onclick="openModal('createCareerModal')"
@@ -75,14 +76,14 @@
 
                             <!-- Botones de acción -->
                             <div class="flex items-center justify-end gap-2 pt-4 border-t border-gray-100">
-                                <button 
-                                    onclick="openEditModal({{ $career->id }})"
-                                    class="inline-flex items-center px-3 py-2 text-sm text-[#0cad56] hover:bg-[#0cad56]/10 rounded-lg transition-colors duration-300">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                    </svg>
-                                    Editar
-                                </button>
+                            <button 
+                                onclick="openEditModal({{ $career->id }})"
+                                class="inline-flex items-center px-3 py-2 text-sm text-[#0cad56] hover:bg-[#0cad56]/10 rounded-lg transition-colors duration-300">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                                Editar
+                            </button>
                                 <form action="{{ route('admin.deleteCareer', $career->id) }}" method="POST" class="inline">
                                     @csrf
                                     @method('DELETE')
@@ -286,54 +287,148 @@
 
 <script>
 function openModal(modalId) {
-    document.getElementById(modalId).classList.remove('hidden');
-    document.getElementById(modalId).classList.add('flex');
+    const modal = document.getElementById(modalId);
+    const modalContent = modal.querySelector('div');
+    
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    
+    setTimeout(() => {
+        modalContent.classList.remove('scale-90', 'opacity-0');
+        modalContent.classList.add('scale-100', 'opacity-100');
+    }, 50);
 }
 
 function closeModal(modalId) {
-    document.getElementById(modalId).classList.add('hidden');
-    document.getElementById(modalId).classList.remove('flex');
+    const modal = document.getElementById(modalId);
+    const modalContent = modal.querySelector('div');
+    
+    modalContent.classList.remove('scale-100', 'opacity-100');
+    modalContent.classList.add('scale-90', 'opacity-0');
+    
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }, 300);
 }
 
 function openEditModal(careerId) {
-    fetch(`/api/careers/${careerId}`)
-        .then(response => response.json())
-        .then(career => {
+    fetch(`/admin/careers/${careerId}`, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(career => {
+        if (career) {
             document.getElementById('editName').value = career.name;
             document.getElementById('editDescription').value = career.description;
             document.getElementById('editDuration').value = career.duration;
             document.getElementById('editCareerForm').action = `/admin/edit-welcome/career/${careerId}`;
             openModal('editCareerModal');
+        } else {
+            throw new Error('No se encontraron datos de la carrera');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo cargar la información de la carrera',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
         });
+    });
 }
 
 function confirmDelete(form) {
-    if (confirm('¿Estás seguro de que deseas eliminar esta carrera?')) {
-        form.submit();
-    }
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: "Esta acción no se puede revertir",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#0cad56',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            form.submit();
+        }
+    });
 }
+
+// Inicialización de Sweet Alert para mensajes de sesión
+document.addEventListener('DOMContentLoaded', function() {
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Éxito',
+            text: "{{ session('success') }}",
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: "{{ session('error') }}",
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+    @endif
+});
 
 // Cerrar modales al hacer clic fuera
 window.onclick = function(event) {
     if (event.target.classList.contains('fixed')) {
-        event.target.classList.add('hidden');
-        event.target.classList.remove('flex');
+        closeModal(event.target.id);
     }
 }
-
-// Animación para mensajes de éxito
-@if(session('success'))
-    setTimeout(() => {
-        const alert = document.querySelector('.animate-slide-in');
-        if (alert) {
-            alert.classList.add('opacity-0');
-            setTimeout(() => alert.remove(), 300);
-        }
-    }, 3000);
-@endif
 </script>
 
 <style>
+.modal-transition {
+    transition: all 0.3s ease-out;
+}
+
+.modal-enter {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+.modal-enter-active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.modal-exit {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.modal-exit-active {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
 @keyframes slideIn {
     from { transform: translateX(100%); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
@@ -341,26 +436,6 @@ window.onclick = function(event) {
 
 .animate-slide-in {
     animation: slideIn 0.3s ease-out;
-    transition: opacity 0.3s ease-out;
-}
-
-/* Estilos para inputs y textareas en foco */
-input:focus, textarea:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(12, 173, 86, 0.2);
-}
-
-/* Scroll suave */
-html {
-    scroll-behavior: smooth;
-}
-
-/* Responsive ajustes */
-@media (max-width: 640px) {
-    .fixed {
-        position: sticky;
-        top: 0;
-    }
 }
 </style>
 @endsection

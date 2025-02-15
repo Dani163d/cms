@@ -31,6 +31,10 @@ class AdminController extends Controller
         $careers = Career::with('user')->latest()->get();
         return view('admin.edit-welcome', compact('careers'));
     }
+    public function getCareer(Career $career)
+{
+    return response()->json($career);
+}
 
     public function createCareer(Request $request)
     {
@@ -38,7 +42,6 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'duration' => 'required|integer|min:1',
-            'area' => 'required|string'
         ]);
 
         $validated['user_id'] = auth()->id();
@@ -53,7 +56,6 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'duration' => 'required|integer|min:1',
-            'area' => 'required|string'
         ]);
 
         $career->update($validated);
